@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ভর্তি ফরম — SEMS</title>
-  <link rel="stylesheet" href="css/global.css?v=4">
-  <link rel="stylesheet" href="css/admission.css?v=4">
-  <link rel="stylesheet" href="css/components.css?v=4">
-  <link rel="stylesheet" href="css/responsive.css?v=4">
+  <link rel="stylesheet" href="css/global.css?v=5">
+  <link rel="stylesheet" href="css/admission.css?v=5">
+  <link rel="stylesheet" href="css/components.css?v=5">
+  <link rel="stylesheet" href="css/responsive.css?v=5">
 </head>
 <body>
   <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
@@ -30,7 +30,7 @@
         <div class="photo-row">
           <div class="photo-preview" id="photoPreview"><span>ছবি নেই</span></div>
           <label class="field photo-field">
-            <span>ছবি আপলোড করুন *</span>
+            <span>ছবি আপলোড করুন (ঐচ্ছিক)</span>
             <input type="file" id="photo" accept="image/*">
             <small>JPG/PNG, সর্বোচ্চ 2MB</small>
           </label>
@@ -101,18 +101,18 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-  <script src="js/firebase/config.js?v=4"></script>
-  <script src="js/firebase/auth.js?v=4"></script>
-  <script src="js/firebase/firestore.js?v=4"></script>
-  <script src="js/firebase/storage.js?v=4"></script>
-  <script src="js/core/helpers.js?v=4"></script>
-  <script src="js/core/router.js?v=4"></script>
-  <script src="js/core/app.js?v=4"></script>
-  <script src="js/core/auth-guard.js?v=4"></script>
-  <script src="js/core/role-guard.js?v=4"></script>
-  <script src="js/components/loader.js?v=4"></script>
-  <script src="js/components/toast.js?v=4"></script>
-  <script src="js/components/navbar.js?v=4"></script>
+  <script src="js/firebase/config.js?v=5"></script>
+  <script src="js/firebase/auth.js?v=5"></script>
+  <script src="js/firebase/firestore.js?v=5"></script>
+  <script src="js/firebase/storage.js?v=5"></script>
+  <script src="js/core/helpers.js?v=5"></script>
+  <script src="js/core/router.js?v=5"></script>
+  <script src="js/core/app.js?v=5"></script>
+  <script src="js/core/auth-guard.js?v=5"></script>
+  <script src="js/core/role-guard.js?v=5"></script>
+  <script src="js/components/loader.js?v=5"></script>
+  <script src="js/components/toast.js?v=5"></script>
+  <script src="js/components/navbar.js?v=5"></script>
   <script>
     let currentUser = null;
     let photoDataUrl = '';
@@ -174,7 +174,7 @@
         };
         const missing = Object.entries(data).filter(([k, v]) => !v && k !== 'email');
         if (missing.length) { errBox.textContent = 'সব ঘর (*) পূরণ করুন।'; errBox.hidden = false; return; }
-        if (!photoDataUrl && !SEMS.isDemo) { errBox.textContent = 'ছবি আপলোড করুন।'; errBox.hidden = false; return; }
+        // ছবি ঐচ্ছিক — না দিলেও ফরম জমা হবে।
         if (!/^01[3-9]\d{8}$/.test(data.mobile)) { errBox.textContent = 'সঠিক মোবাইল নম্বর দিন।'; errBox.hidden = false; return; }
 
         SEMSLoader.show();
