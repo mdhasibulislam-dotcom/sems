@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEMS — Sinha Education Management System</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+
+  <header class="landing-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html"><span class="brand-logo">S</span> SEMS <small>Sinha Education Management System</small></a>
+      <nav class="landing-nav">
+        <a href="login.html" class="btn btn-primary">লগইন</a>
+        <a href="register.html" class="btn btn-outline">রেজিস্ট্রেশন</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container landing-hero">
+    <h1>সিনহা এডুকেশন ম্যানেজমেন্ট সিস্টেম</h1>
+    <p class="lead">কোচিং পরিচালনার সবকিছু এক জায়গায় — শিক্ষার্থী, শিক্ষক ও অ্যাডমিন প্যানেল।</p>
+    <div class="hero-actions">
+      <a href="login.html" class="btn btn-primary btn-lg">লগইন করুন</a>
+      <a href="register.html" class="btn btn-outline btn-lg">নতুন শিক্ষার্থী রেজিস্ট্রেশন</a>
+    </div>
+    <div class="feature-grid">
+      <div class="card"><h3>🎓 শিক্ষার্থী</h3><p>রুটিন, লেকচার, নোটিশ, রেজাল্ট ও উপস্থিতি দেখুন।</p></div>
+      <div class="card"><h3>👨‍🏫 শিক্ষক</h3><p>নিজের ব্যাচ, ক্লাস, লেকচার, হাজিরা ও নম্বর পরিচালনা করুন।</p></div>
+      <div class="card"><h3>🛡️ অ্যাডমিন</h3><p>ব্যাচ, রুটিন, পরীক্ষা, নোটিশ ও পুরো সিস্টেম নিয়ন্ত্রণ করুন।</p></div>
+    </div>
+    <p class="demo-note" id="demoNotice" hidden>⚠️ Firebase config বসানো হয়নি — ডেমো মোডে চলছে। আসল ব্যবহারের জন্য Firebase কনফিগ বসান (দেখুন README.md)।</p>
+  </main>
+
+  <footer class="landing-footer"><p>© 2026 SEMS — Sinha Education Management System</p></footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="js/firebase/config.js"></script>
+  <script src="js/firebase/auth.js"></script>
+  <script src="js/core/helpers.js"></script>
+  <script src="js/core/router.js"></script>
+  <script src="js/core/app.js"></script>
+  <script src="js/components/loader.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script>
+    // index.html: লগইন করা থাকলে রোল অনুযায়ী ড্যাশবোর্ডে পাঠাও, না থাকলে লগইন পেজে।
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (window.SEMS && SEMS.isDemo) document.getElementById('demoNotice').hidden = false;
+      SEMSLoader.show();
+      const user = await SEMSAuth.getCurrentUser();
+      SEMSLoader.hide();
+      if (!user) { window.location.replace('login.html'); return; }
+      window.location.replace(SEMSRouter.dashboardPath(user));
+    });
+  </script>
+</body>
+</html>

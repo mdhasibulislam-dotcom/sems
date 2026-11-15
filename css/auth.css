@@ -1,0 +1,32 @@
+/* SEMS — auth.css | Phase 1
+   লগইন / রেজিস্ট্রেশন / পাসওয়ার্ড রিসেট পেজের স্টাইল */
+.auth-page {
+  background: linear-gradient(160deg, var(--primary-light) 0%, #fff 55%, #f3f4f6 100%);
+  min-height: 100vh;
+}
+.auth-wrap {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 32px 16px;
+}
+.auth-card {
+  width: 100%; max-width: 460px; background: #fff;
+  border: 1px solid var(--border); border-radius: 16px;
+  box-shadow: var(--shadow); padding: 32px 28px;
+}
+.auth-card h1 { font-size: 1.5rem; text-align: center; margin: 14px 0 6px; }
+.auth-sub { text-align: center; color: var(--muted); font-size: 0.9rem; }
+.auth-desc { text-align: center; color: var(--muted); margin-bottom: 20px; }
+.auth-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 0.92rem; }
+.auth-switch { text-align: center; margin-top: 18px; }
+.auth-back { text-align: center; margin-top: 10px; font-size: 0.92rem; }
+
+.divider { display: flex; align-items: center; gap: 12px; color: var(--muted); margin: 20px 0; font-size: 0.9rem; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+.role-field { display: flex; gap: 10px; flex-wrap: wrap; }
+.radio-pill {
+  flex: 1; display: flex; align-items: center; gap: 8px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-weight: 600;
+}
+.radio-pill:has(input:checked) { border-color: var(--primary); background: var(--primary-light); }
+.radio-pill input { width: auto; accent-color: var(--primary); }

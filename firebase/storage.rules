@@ -1,0 +1,37 @@
+// SEMS — Storage Security Rules | Phase 1
+// - নিজের প্রোফাইল ছবি: শুধু নিজে আপলোড/পড়তে পারে (অ্যাডমিন সব পারে)
+// - লেকচার ফাইল: অ্যাডমিন + সংশ্লিষ্ট শিক্ষক আপলোড; লগইন করা সবাই পড়তে পারে
+// - ছবি সর্বোচ্চ 2MB, শুধু image/* টাইপ
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // শিক্ষার্থীর ছবি: students/{uid}/photo.jpg
+    match /students/{uid}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && (request.auth.uid == uid
+          || get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin')
+        && request.resource.size < 2 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null
+        && (request.auth.uid == uid
+          || get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin');
+    }
+
+    // লেকচার/স্লাইড ফাইল: lectures/{batchId}/...
+    match /lectures/{batchId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && get(/databases/(default)/documents/users/$(request.auth.uid)).data.role in ['admin', 'teacher']
+        && request.resource.size < 20 * 1024 * 1024;
+      allow delete: if request.auth != null
+        && get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // অন্য কোনো পাথ ডিফল্টভাবে বন্ধ
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

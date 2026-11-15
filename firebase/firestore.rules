@@ -1,0 +1,114 @@
+rules_version = '2';
+
+// SEMS — Firestore Security Rules | Phase 1
+// রোল: users/{uid} ডকুমেন্টের `role` ফিল্ডে থাকে — 'student' | 'teacher' | 'admin'
+//
+// নিয়ম (সংক্ষেপে):
+// - লগইন করা যেকোনো ইউজার নিজের প্রোফাইল পড়তে/লিখতে পারে
+// - অ্যাডমিন সবকিছু পড়তে/লিখতে পারে
+// - শিক্ষক শুধু নিজের ব্যাচের ডেটা পড়তে/লিখতে পারে
+// - শিক্ষার্থী শুধু নিজের ডেটা ও প্রকাশিত (published) কনটেন্ট পড়তে পারে
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    function isTeacher() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    // শিক্ষক শুধু নিজের ব্যাচের ডেটা দেখতে পারে — batch ডকুমেন্টে
+    // teacherId ফিল্ডে তার uid থাকতে হবে
+    function isOwnBatch(batchId) {
+      return isTeacher() &&
+        get(/databases/$(database)/documents/batches/$(batchId)).data.teacherId == request.auth.uid;
+    }
+
+    // --- users: নিজের প্রোফাইল পড়া/লেখা; অ্যাডমিন সব পড়তে/লিখতে পারে ---
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == uid
+        && request.resource.data.role in ['student', 'teacher']; // admin নিজে তৈরি করা যায় না
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // --- usernames: ইউজারনেম দিয়ে লগইনের জন্য সবাই পড়তে পারে,
+    // লেখা শুধু নিজের অ্যাকাউন্ট তৈরির সময় ---
+    match /usernames/{username} {
+      allow read: if true;
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    // --- admissions / students: নিজের ফরম জমা ও পড়া; অ্যাডমিন সব; শিক্ষক নিজের ব্যাচের শিক্ষার্থী ---
+    match /admissions/{uid} {
+      allow read: if isOwner(uid) || isAdmin()
+        || (isTeacher() && resource.data.courseBatch != null);
+      allow create: if isOwner(uid);
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    match /students/{uid} {
+      allow read: if isOwner(uid) || isAdmin() || isTeacher();
+      allow create: if isOwner(uid) || isAdmin();
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // --- batches: অ্যাডমিন তৈরি/পরিচালনা; শিক্ষক নিজের ব্যাচ পড়তে পারে; শিক্ষার্থী পড়তে পারে ---
+    match /batches/{batchId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // --- lectures: অ্যাডমিন + সংশ্লিষ্ট শিক্ষক লিখতে পারে; শিক্ষার্থী শুধু প্রকাশিতগুলো পড়তে পারে ---
+    match /lectures/{lectureId} {
+      allow read: if isSignedIn()
+        && (resource.data.published == true || isAdmin()
+          || (isTeacher() && resource.data.teacherId == request.auth.uid));
+      allow create, update, delete: if isAdmin()
+        || (isTeacher() && request.resource.data.teacherId == request.auth.uid);
+    }
+
+    // --- notices: অ্যাডমিন লেখে; লগইন করা সবাই পড়ে ---
+    match /notices/{noticeId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // --- exams / results / attendance: Phase 4/5-এ পূর্ণাঙ্গ হবে ---
+    match /exams/{examId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+    match /results/{resultId} {
+      allow read: if isSignedIn()
+        && (resource.data.studentId == request.auth.uid || isAdmin()
+          || (isTeacher() && resource.data.teacherId == request.auth.uid));
+      allow create, update: if isAdmin() || isTeacher();
+      allow delete: if isAdmin();
+    }
+    match /attendance/{recordId} {
+      allow read: if isSignedIn()
+        && (resource.data.studentId == request.auth.uid || isAdmin()
+          || (isTeacher() && resource.data.teacherId == request.auth.uid));
+      allow create, update: if isAdmin() || isTeacher();
+      allow delete: if isAdmin();
+    }
+
+    // --- settings: শুধু অ্যাডমিন ---
+    match /settings/{doc} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

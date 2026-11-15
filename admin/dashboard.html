@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অ্যাডমিন ড্যাশবোর্ড — SEMS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+  <div id="toastRoot"></div>
+  <div id="navbarRoot"></div>
+
+  <main class="container dashboard-wrap">
+    <div class="dashboard-card">
+      <h1>🛡️ অ্যাডমিন ড্যাশবোর্ড</h1>
+      <p class="welcome" id="welcomeText">স্বাগতম!</p>
+      <div class="notice notice-info">
+        <strong>Phase 4-এ আসছে:</strong> ক্লাস রুটিন, ব্যাচ, লেকচার/স্লাইড (প্রকাশের তারিখসহ), নোটিশ, পরীক্ষা, শিক্ষার্থী/শিক্ষক ব্যবস্থাপনা ও সেটিংস।
+      </div>
+      <p class="muted">এটি Phase 1-এর প্লেসহোল্ডার ড্যাশবোর্ড — শুধু লগইন ও রোল চেকের ফ্লো যাচাই করার জন্য।</p>
+      <button class="btn btn-outline" id="logoutBtn" type="button">লগআউট</button>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="../js/firebase/config.js"></script>
+  <script src="../js/firebase/auth.js"></script>
+  <script src="../js/core/helpers.js"></script>
+  <script src="../js/core/router.js"></script>
+  <script src="../js/core/app.js"></script>
+  <script src="../js/core/auth-guard.js"></script>
+  <script src="../js/core/role-guard.js"></script>
+  <script src="../js/components/loader.js"></script>
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/components/sidebar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      SEMSLoader.show();
+      let user;
+      try {
+        user = await SEMSRoleGuard.requireRole('admin');
+      } catch (e) { return; }
+      SEMSLoader.hide();
+      SEMSNavbar.render('navbarRoot', user);
+      document.getElementById('welcomeText').textContent =
+        'স্বাগতম, ' + (user.displayName || user.name || user.email || 'অ্যাডমিন') + '!';
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await SEMSAuth.signOut();
+        window.location.replace('../login.html');
+      });
+    });
+  </script>
+</body>
+</html>

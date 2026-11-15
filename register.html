@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>রেজিস্ট্রেশন — SEMS</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="auth-page">
+  <div id="loader" class="loader-overlay" hidden><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+  <div id="toastRoot"></div>
+
+  <main class="auth-wrap">
+    <div class="auth-card">
+      <a class="brand brand-center" href="index.html"><span class="brand-logo">S</span> SEMS</a>
+      <p class="auth-sub">Sinha Education Management System</p>
+      <h1>নতুন অ্যাকাউন্ট তৈরি করুন</h1>
+
+      <div class="notice notice-warn" id="demoNotice" hidden>
+        ⚠️ <strong>Firebase config বসানো হয়নি</strong> — ডেমো মোডে চলছে। রেজিস্ট্রেশন শুধু এই ব্রাউজারে (localStorage) সংরক্ষিত হবে।
+      </div>
+      <div class="notice notice-err" id="errorBox" hidden></div>
+
+      <form id="registerForm" novalidate>
+        <label class="field">
+          <span>পুরো নাম *</span>
+          <input type="text" id="name" placeholder="আপনার পুরো নাম" required autocomplete="name">
+        </label>
+        <label class="field">
+          <span>ইমেইল *</span>
+          <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+        </label>
+        <label class="field">
+          <span>ইউজারনেম *</span>
+          <input type="text" id="username" placeholder="শুধু ছোট হাতের অক্ষর, সংখ্যা, _ (কমপক্ষে ৩ অক্ষর)" required autocomplete="username">
+        </label>
+        <label class="field">
+          <span>মোবাইল নম্বর *</span>
+          <input type="tel" id="phone" placeholder="01XXXXXXXXX" required autocomplete="tel">
+        </label>
+        <fieldset class="field role-field">
+          <legend>আপনি কে? *</legend>
+          <label class="radio-pill"><input type="radio" name="role" value="student" checked> 🎓 শিক্ষার্থী (Student)</label>
+          <label class="radio-pill"><input type="radio" name="role" value="teacher"> 👨‍🏫 শিক্ষক (Teacher)</label>
+        </fieldset>
+        <p class="hint">অ্যাডমিন নিজে রেজিস্টার করতে পারবেন না — অ্যাডমিন অ্যাকাউন্ট শুধু অ্যাডমিন তৈরি করেন।</p>
+        <label class="field">
+          <span>পাসওয়ার্ড * (কমপক্ষে ৮ অক্ষর)</span>
+          <input type="password" id="password" placeholder="কমপক্ষে ৮ অক্ষরের পাসওয়ার্ড" required autocomplete="new-password" minlength="8">
+        </label>
+        <label class="field">
+          <span>পাসওয়ার্ড নিশ্চিত করুন *</span>
+          <input type="password" id="confirmPassword" placeholder="পাসওয়ার্ড আবার লিখুন" required autocomplete="new-password" minlength="8">
+        </label>
+        <button type="submit" class="btn btn-primary btn-block" id="registerBtn">রেজিস্ট্রেশন করুন</button>
+      </form>
+
+      <div class="divider"><span>অথবা</span></div>
+      <button class="btn btn-google btn-block" id="googleBtn" type="button">
+        <span class="g-logo">G</span> Google দিয়ে সাইন আপ করুন
+      </button>
+
+      <p class="auth-switch">ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="login.html">লগইন করুন</a></p>
+      <p class="auth-back"><a href="index.html">← হোমে ফিরুন</a></p>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="js/firebase/config.js"></script>
+  <script src="js/firebase/auth.js"></script>
+  <script src="js/firebase/firestore.js"></script>
+  <script src="js/core/helpers.js"></script>
+  <script src="js/core/router.js"></script>
+  <script src="js/core/app.js"></script>
+  <script src="js/components/loader.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (window.SEMS && SEMS.isDemo) document.getElementById('demoNotice').hidden = false;
+      const existing = await SEMSAuth.getCurrentUser();
+      if (existing) { window.location.replace(SEMSRouter.dashboardPath(existing)); return; }
+
+      const errBox = document.getElementById('errorBox');
+      const showErr = (m) => { errBox.textContent = m; errBox.hidden = false; };
+
+      document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errBox.hidden = true;
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const username = document.getElementById('username').value.trim().toLowerCase();
+        const phone = document.getElementById('phone').value.trim();
+        const role = (document.querySelector('input[name="role"]:checked') || {}).value || 'student';
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirmPassword').value;
+
+        if (!name || !email || !username || !phone || !password) return showErr('সব ঘর পূরণ করুন।');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr('সঠিক ইমেইল ঠিকানা দিন।');
+        if (!/^[a-z0-9_]{3,}$/.test(username)) return showErr('ইউজারনেম কমপক্ষে ৩ অক্ষরের হতে হবে (a-z, 0-9, _ )।');
+        if (!/^01[3-9]\d{8}$/.test(phone)) return showErr('সঠিক বাংলাদেশি মোবাইল নম্বর দিন (01XXXXXXXXX)।');
+        if (password.length < 8) return showErr('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।');
+        if (password !== confirm) return showErr('দুই পাসওয়ার্ড মিলছে না।');
+
+        SEMSLoader.show();
+        try {
+          const user = await SEMSAuth.signUp({ name, email, username, phone, password, role });
+          SEMSToast.success('রেজিস্ট্রেশন সফল হয়েছে!');
+          window.location.replace(SEMSRouter.dashboardPath(user));
+        } catch (err) {
+          SEMSLoader.hide();
+          showErr(SEMSHelpers.friendlyAuthError(err));
+        }
+      });
+
+      document.getElementById('googleBtn').addEventListener('click', async () => {
+        errBox.hidden = true;
+        SEMSLoader.show();
+        try {
+          const user = await SEMSAuth.signInWithGoogle();
+          SEMSToast.success('Google দিয়ে সাইন আপ সফল!');
+          window.location.replace(SEMSRouter.dashboardPath(user));
+        } catch (err) {
+          SEMSLoader.hide();
+          showErr(SEMSHelpers.friendlyAuthError(err));
+        }
+      });
+    });
+  </script>
+</body>
+</html>

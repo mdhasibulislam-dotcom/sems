@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ভর্তি ফরম — SEMS</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/admission.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+  <div id="toastRoot"></div>
+  <div id="navbarRoot"></div>
+
+  <main class="container admission-wrap">
+    <div class="admission-card">
+      <h1>🎓 ভর্তি ফরম</h1>
+      <p class="auth-desc">ড্যাশবোর্ডে ঢোকার আগে এই ফরমটি পূরণ করা বাধ্যতামূলক। সব তথ্য সঠিকভাবে দিন।</p>
+
+      <div class="notice notice-warn" id="demoNotice" hidden>
+        ⚠️ <strong>Firebase config বসানো হয়নি</strong> — ডেমো মোডে চলছে। ফরমটি শুধু এই ব্রাউজারে (localStorage) সংরক্ষিত হবে।
+      </div>
+      <div class="notice notice-err" id="errorBox" hidden></div>
+      <div class="notice notice-ok" id="successBox" hidden></div>
+
+      <form id="admissionForm" novalidate>
+        <h2 class="form-section">ব্যক্তিগত তথ্য</h2>
+        <div class="photo-row">
+          <div class="photo-preview" id="photoPreview"><span>ছবি নেই</span></div>
+          <label class="field photo-field">
+            <span>ছবি আপলোড করুন *</span>
+            <input type="file" id="photo" accept="image/*">
+            <small>JPG/PNG, সর্বোচ্চ 2MB</small>
+          </label>
+        </div>
+
+        <div class="grid-2">
+          <label class="field"><span>পুরো নাম *</span><input type="text" id="fullName" required></label>
+          <label class="field"><span>জন্ম তারিখ *</span><input type="date" id="dob" required></label>
+          <label class="field"><span>লিঙ্গ *</span>
+            <select id="gender" required>
+              <option value="">নির্বাচন করুন</option>
+              <option value="male">ছেলে</option>
+              <option value="female">মেয়ে</option>
+              <option value="other">অন্যান্য</option>
+            </select>
+          </label>
+          <label class="field"><span>রক্তের গ্রুপ *</span>
+            <select id="bloodGroup" required>
+              <option value="">নির্বাচন করুন</option>
+              <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+              <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+            </select>
+          </label>
+          <label class="field"><span>মোবাইল নম্বর *</span><input type="tel" id="mobile" placeholder="01XXXXXXXXX" required></label>
+          <label class="field"><span>ইমেইল</span><input type="email" id="email" readonly></label>
+        </div>
+
+        <h2 class="form-section">অভিভাবক ও জরুরি যোগাযোগ</h2>
+        <div class="grid-2">
+          <label class="field"><span>অভিভাবকের নাম *</span><input type="text" id="guardianName" required></label>
+          <label class="field"><span>অভিভাবকের মোবাইল *</span><input type="tel" id="guardianPhone" placeholder="01XXXXXXXXX" required></label>
+          <label class="field"><span>জরুরি যোগাযোগ (নাম) *</span><input type="text" id="emergencyName" required></label>
+          <label class="field"><span>জরুরি যোগাযোগ (মোবাইল) *</span><input type="tel" id="emergencyPhone" placeholder="01XXXXXXXXX" required></label>
+        </div>
+
+        <h2 class="form-section">শিক্ষাগত তথ্য</h2>
+        <div class="grid-2">
+          <label class="field"><span>কলেজের নাম *</span><input type="text" id="collegeName" required></label>
+          <label class="field"><span>পূর্ববর্তী শিক্ষা *</span>
+            <select id="previousEducation" required>
+              <option value="">নির্বাচন করুন</option>
+              <option value="ssc">এসএসসি (SSC)</option>
+              <option value="hsc">এইচএসসি (HSC)</option>
+              <option value="hsc-running">এইচএসসি চলমান</option>
+              <option value="other">অন্যান্য</option>
+            </select>
+          </label>
+          <label class="field"><span>কোর্স / ব্যাচ নির্বাচন করুন *</span>
+            <select id="courseBatch" required>
+              <option value="">নির্বাচন করুন</option>
+              <option value="hsc-physics">HSC Physics Batch</option>
+              <option value="hsc-chemistry">HSC Chemistry Batch</option>
+              <option value="hsc-math">HSC Higher Math Batch</option>
+              <option value="admission-a">DU A Unit Admission Batch</option>
+              <option value="admission-general">Admission (General) Batch</option>
+            </select>
+          </label>
+          <label class="field"><span>ঠিকানা *</span><textarea id="address" rows="2" placeholder="বাসা/হোল্ডিং, রোড, এলাকা, জেলা" required></textarea></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg">ভর্তি ফরম জমা দিন</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="js/firebase/config.js"></script>
+  <script src="js/firebase/auth.js"></script>
+  <script src="js/firebase/firestore.js"></script>
+  <script src="js/firebase/storage.js"></script>
+  <script src="js/core/helpers.js"></script>
+  <script src="js/core/router.js"></script>
+  <script src="js/core/app.js"></script>
+  <script src="js/core/auth-guard.js"></script>
+  <script src="js/core/role-guard.js"></script>
+  <script src="js/components/loader.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/navbar.js"></script>
+  <script>
+    let currentUser = null;
+    let photoDataUrl = '';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (window.SEMS && SEMS.isDemo) document.getElementById('demoNotice').hidden = false;
+      SEMSLoader.show();
+      try {
+        // শুধু লগইন করা শিক্ষার্থীই এই পেজে ঢুকতে পারবে
+        currentUser = await SEMSRoleGuard.requireRole('student');
+      } catch (e) {
+        return; // গার্ড নিজেই লগইন পেজে পাঠিয়ে দিয়েছে
+      } finally {
+        SEMSLoader.hide();
+      }
+      SEMSNavbar.render('navbarRoot', currentUser);
+      document.getElementById('email').value = currentUser.email || '';
+      document.getElementById('fullName').value = currentUser.displayName || currentUser.name || '';
+
+      // ছবির প্রিভিউ
+      document.getElementById('photo').addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        const preview = document.getElementById('photoPreview');
+        if (!file) { preview.innerHTML = '<span>ছবি নেই</span>'; photoDataUrl = ''; return; }
+        if (file.size > 2 * 1024 * 1024) {
+          SEMSToast.error('ছবির সাইজ 2MB-এর বেশি হতে পারবে না।');
+          e.target.value = ''; return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          photoDataUrl = ev.target.result;
+          preview.innerHTML = '<img src="' + photoDataUrl + '" alt="ছবির প্রিভিউ">';
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('admissionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errBox = document.getElementById('errorBox');
+        const okBox = document.getElementById('successBox');
+        errBox.hidden = true; okBox.hidden = true;
+
+        const data = {
+          fullName: document.getElementById('fullName').value.trim(),
+          dob: document.getElementById('dob').value,
+          gender: document.getElementById('gender').value,
+          bloodGroup: document.getElementById('bloodGroup').value,
+          mobile: document.getElementById('mobile').value.trim(),
+          guardianName: document.getElementById('guardianName').value.trim(),
+          guardianPhone: document.getElementById('guardianPhone').value.trim(),
+          collegeName: document.getElementById('collegeName').value.trim(),
+          address: document.getElementById('address').value.trim(),
+          courseBatch: document.getElementById('courseBatch').value,
+          previousEducation: document.getElementById('previousEducation').value,
+          emergencyName: document.getElementById('emergencyName').value.trim(),
+          emergencyPhone: document.getElementById('emergencyPhone').value.trim(),
+          email: currentUser.email || '',
+          uid: currentUser.uid
+        };
+        const missing = Object.entries(data).filter(([k, v]) => !v && k !== 'email');
+        if (missing.length) { errBox.textContent = 'সব ঘর (*) পূরণ করুন।'; errBox.hidden = false; return; }
+        if (!photoDataUrl && !SEMS.isDemo) { errBox.textContent = 'ছবি আপলোড করুন।'; errBox.hidden = false; return; }
+        if (!/^01[3-9]\d{8}$/.test(data.mobile)) { errBox.textContent = 'সঠিক মোবাইল নম্বর দিন।'; errBox.hidden = false; return; }
+
+        SEMSLoader.show();
+        try {
+          const photoFile = document.getElementById('photo').files[0];
+          await SEMSFirestore.saveAdmission(currentUser, data, photoFile, photoDataUrl);
+          SEMSLoader.hide();
+          okBox.textContent = 'ভর্তি ফরম সফলভাবে জমা হয়েছে! ড্যাশবোর্ডে নিয়ে যাওয়া হচ্ছে...';
+          okBox.hidden = false;
+          SEMSToast.success('ভর্তি ফরম জমা হয়েছে!');
+          setTimeout(() => { window.location.replace('student/dashboard.html'); }, 1200);
+        } catch (err) {
+          SEMSLoader.hide();
+          errBox.textContent = err && err.message ? err.message : 'ফরম জমা দেওয়া যায়নি। আবার চেষ্টা করুন।';
+          errBox.hidden = false;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

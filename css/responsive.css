@@ -1,0 +1,25 @@
+/* SEMS — responsive.css | Phase 1
+   মোবাইল রেসপন্সিভ নিয়ম (সব পেজে শেষে লোড হয়) */
+@media (max-width: 768px) {
+  .feature-grid { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .landing-hero h1 { font-size: 1.5rem; }
+  .landing-hero { padding: 36px 16px; }
+  .auth-card, .admission-card, .dashboard-card { padding: 24px 18px; }
+  .brand small { display: none; }
+  .header-inner { flex-wrap: wrap; gap: 10px; }
+  .photo-row { flex-direction: column; }
+  .photo-preview { width: 100px; height: 120px; }
+  .nav-user .user-name { display: none; }
+  .sems-sidebar { width: 200px; }
+  .layout-with-sidebar { flex-direction: column; }
+  .sems-sidebar { width: 100%; min-height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+}
+
+@media (max-width: 420px) {
+  html { font-size: 15px; }
+  .hero-actions .btn { width: 100%; }
+  .auth-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  #toastRoot { left: 16px; }
+  .toast { max-width: none; }
+}
