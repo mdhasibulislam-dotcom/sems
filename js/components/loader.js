@@ -8,11 +8,14 @@
   var SEMSLoader = {
     show: function () {
       var el = getEl();
-      if (el) el.hidden = false;
+      if (el) { el.hidden = false; el.style.display = ''; }
     },
     hide: function () {
       var el = getEl();
-      if (el) el.hidden = true;
+      // style.display='none' ও দেওয়া হলো, কারণ পুরনো ক্যাশে থাকা
+      // CSS-এ .loader-overlay { display:flex } hidden অ্যাট্রিবিউটকে
+      // ওভাররাইড করে লোডার আটকে রাখছিল।
+      if (el) { el.hidden = true; el.style.display = 'none'; }
     }
   };
 
