@@ -65,6 +65,18 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // --- teacherApplications: শিক্ষক আবেদন — লগইন ছাড়াই যে কেউ
+    // আবেদন করতে পারে (পাবলিক ফরম); পড়া শুধু অ্যাডমিন বা নিজের
+    // ইমেইলের আবেদনকারী; অনুমোদন/বাতিল শুধু অ্যাডমিন। রেজিস্টারের
+    // সময় নতুন ইউজার নিজের ইমেইলের অনুমোদিত আবেদন পড়তে পারে,
+    // যাতে role 'teacher' দেওয়া যায়। ---
+    match /teacherApplications/{applicationId} {
+      allow create: if true;
+      allow read: if isAdmin()
+        || (isSignedIn() && resource.data.email == request.auth.token.email);
+      allow update, delete: if isAdmin();
+    }
+
     // --- courses: অ্যাডমিন তৈরি/পরিচালনা; লগইন করা সবাই পড়ে ---
     match /courses/{courseId} {
       allow read: if isSignedIn();

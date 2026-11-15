@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>শিক্ষক আবেদন — SEMS</title>
+  <link rel="stylesheet" href="css/global.css?v=5">
+  <link rel="stylesheet" href="css/admission.css?v=5">
+  <link rel="stylesheet" href="css/components.css?v=5">
+  <link rel="stylesheet" href="css/responsive.css?v=5">
+</head>
+<body>
+  <div id="loader" class="loader-overlay" hidden><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+  <div id="toastRoot"></div>
+
+  <main class="container admission-wrap">
+    <div class="admission-card">
+      <h1><span class="ic" data-icon="graduationCap"></span> শিক্ষক আবেদন ফরম</h1>
+      <p class="auth-desc">শিক্ষক হিসেবে যোগ দিতে চাইলে এই ফরমটি পূরণ করুন। অ্যাডমিন আপনার আবেদন পর্যালোচনা করে অনুমোদন দিলে, একই ইমেইল দিয়ে রেজিস্ট্রেশন করলেই আপনার শিক্ষকের অ্যাকাউন্ট তৈরি হবে।</p>
+
+      <div class="notice notice-warn" id="demoNotice" hidden>
+        <span class="ic" data-icon="alertTriangle"></span> <strong>Firebase config বসানো হয়নি</strong> — ডেমো মোডে চলছে। আবেদনটি শুধু এই ব্রাউজারে (localStorage) সংরক্ষিত হবে।
+      </div>
+      <div class="notice notice-err" id="errorBox" hidden></div>
+      <div class="notice notice-ok" id="successBox" hidden></div>
+
+      <form id="teacherApplyForm" novalidate>
+        <h2 class="form-section">ব্যক্তিগত তথ্য</h2>
+        <div class="grid-2">
+          <label class="field"><span>পুরো নাম *</span><input type="text" id="fullName" placeholder="আপনার পুরো নাম" required></label>
+          <label class="field"><span>ইমেইল *</span><input type="email" id="email" placeholder="you@example.com" required></label>
+          <label class="field"><span>মোবাইল নম্বর *</span><input type="tel" id="mobile" placeholder="01XXXXXXXXX" required></label>
+          <label class="field"><span>বর্তমান প্রতিষ্ঠান</span><input type="text" id="institution" placeholder="যেখানে পড়ান / কাজ করেন"></label>
+        </div>
+
+        <h2 class="form-section">পড়ানোর বিষয় *</h2>
+        <div class="grid-2" id="subjectList">
+          <label class="check"><input type="checkbox" name="subject" value="পদার্থবিজ্ঞান"> পদার্থবিজ্ঞান</label>
+          <label class="check"><input type="checkbox" name="subject" value="রসায়ন"> রসায়ন</label>
+          <label class="check"><input type="checkbox" name="subject" value="উচ্চতর গণিত"> উচ্চতর গণিত</label>
+          <label class="check"><input type="checkbox" name="subject" value="বাংলা"> বাংলা</label>
+          <label class="check"><input type="checkbox" name="subject" value="ইংরেজি"> ইংরেজি</label>
+          <label class="check"><input type="checkbox" name="subject" value="জীববিজ্ঞান"> জীববিজ্ঞান</label>
+          <label class="check"><input type="checkbox" name="subject" value="আইসিটি"> আইসিটি</label>
+          <label class="check"><input type="checkbox" name="subject" value="গণিত"> গণিত</label>
+        </div>
+        <label class="field"><span>অন্যান্য বিষয় (যদি থাকে)</span><input type="text" id="otherSubject" placeholder="যেমন: হিসাববিজ্ঞান"></label>
+
+        <h2 class="form-section">যোগ্যতা ও অভিজ্ঞতা</h2>
+        <div class="grid-2">
+          <label class="field"><span>শিক্ষাগত যোগ্যতা *</span><input type="text" id="qualification" placeholder="যেমন: বিএসসি (অনার্স) পদার্থবিজ্ঞান, ঢাকা বিশ্ববিদ্যালয়" required></label>
+          <label class="field"><span>পড়ানোর অভিজ্ঞতা *</span>
+            <select id="experience" required>
+              <option value="">নির্বাচন করুন</option>
+              <option value="১ বছরের কম">১ বছরের কম</option>
+              <option value="১–৩ বছর">১–৩ বছর</option>
+              <option value="৩–৫ বছর">৩–৫ বছর</option>
+              <option value="৫ বছরের বেশি">৫ বছরের বেশি</option>
+            </select>
+          </label>
+          <label class="field"><span>ঠিকানা *</span><textarea id="address" rows="2" placeholder="বাসা/হোল্ডিং, রোড, এলাকা, জেলা" required></textarea></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg">আবেদন জমা দিন</button>
+      </form>
+      <p class="auth-switch">ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="login.html">লগইন করুন</a></p>
+      <p class="auth-back"><a href="index.html"><span class="ic" data-icon="arrowLeft"></span> হোমে ফিরুন</a></p>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="js/firebase/config.js?v=5"></script>
+  <script src="js/firebase/auth.js?v=5"></script>
+  <script src="js/firebase/firestore.js?v=5"></script>
+  <script src="js/core/helpers.js?v=5"></script>
+  <script src="js/core/router.js?v=5"></script>
+  <script src="js/core/app.js?v=5"></script>
+  <script src="js/components/icons.js?v=5"></script>
+  <script src="js/components/loader.js?v=5"></script>
+  <script src="js/components/toast.js?v=5"></script>
+  <script>
+    // শিক্ষক আবেদন — লগইন ছাড়াই জমা দেওয়া যায় (পাবলিক ফরম)।
+    // Firestore-এ teacherApplications কালেকশনে status 'pending' হয়।
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.SEMS && SEMS.isDemo) document.getElementById('demoNotice').hidden = false;
+      if (window.SEMSLoader) SEMSLoader.hide();
+
+      document.getElementById('teacherApplyForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errBox = document.getElementById('errorBox');
+        const okBox = document.getElementById('successBox');
+        errBox.hidden = true; okBox.hidden = true;
+
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim().toLowerCase();
+        const mobile = document.getElementById('mobile').value.trim();
+        const institution = document.getElementById('institution').value.trim();
+        const qualification = document.getElementById('qualification').value.trim();
+        const experience = document.getElementById('experience').value;
+        const address = document.getElementById('address').value.trim();
+        const otherSubject = document.getElementById('otherSubject').value.trim();
+        const subjects = [];
+        document.querySelectorAll('input[name="subject"]:checked').forEach((c) => subjects.push(c.value));
+        if (otherSubject) subjects.push(otherSubject);
+
+        if (!fullName || !email || !mobile || !qualification || !experience || !address) {
+          errBox.textContent = 'সব ঘর (*) পূরণ করুন।';
+          errBox.hidden = false; return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          errBox.textContent = 'সঠিক ইমেইল ঠিকানা দিন।';
+          errBox.hidden = false; return;
+        }
+        if (!/^01[3-9]\d{8}$/.test(mobile)) {
+          errBox.textContent = 'সঠিক মোবাইল নম্বর দিন।';
+          errBox.hidden = false; return;
+        }
+        if (!subjects.length) {
+          errBox.textContent = 'কমপক্ষে একটি বিষয় নির্বাচন করুন।';
+          errBox.hidden = false; return;
+        }
+
+        const record = {
+          fullName: fullName, email: email, mobile: mobile,
+          institution: institution, subjects: subjects,
+          subject: subjects.join(', '),
+          qualification: qualification, experience: experience,
+          address: address, status: 'pending'
+        };
+
+        SEMSLoader.show();
+        try {
+          if (window.SEMS && SEMS.isDemo) {
+            // ডেমো: একই ইমেইলে বাকি/অনুমোদিত আবেদন থাকলে আবার নেওয়া হবে না
+            var list = [];
+            try { list = JSON.parse(localStorage.getItem('sems_demo_teacher_applications') || '[]'); } catch (e2) { list = []; }
+            var dup = list.some(function (a) { return (a.email || '').toLowerCase() === email && a.status !== 'rejected'; });
+            if (dup) throw new Error('এই ইমেইল দিয়ে ইতিমধ্যে একটি আবেদন জমা আছে। অ্যাডমিনের অনুমোদনের জন্য অপেক্ষা করুন।');
+            record.id = 'demo-ta' + Date.now();
+            record.createdAt = new Date().toISOString();
+            list.unshift(record);
+            localStorage.setItem('sems_demo_teacher_applications', JSON.stringify(list));
+          } else {
+            // আসল: Rules-এ create সবার জন্য খোলা (পাবলিক ফরম)।
+            // লগইন করা থাকলে একই ইমেইলের বাকি আবেদন যাচাই করা হয়;
+            // লগইন ছাড়া যাচাই সম্ভব নয় বলে সরাসরি জমা হয়।
+            try {
+              var fbUser = firebase.auth().currentUser;
+              if (fbUser) {
+                var snap = await firebase.firestore().collection('teacherApplications')
+                  .where('email', '==', email).limit(5).get();
+                var exists = false;
+                snap.forEach(function (doc) { if (doc.data().status !== 'rejected') exists = true; });
+                if (exists) throw new Error('এই ইমেইল দিয়ে ইতিমধ্যে একটি আবেদন জমা আছে। অ্যাডমিনের অনুমোদনের জন্য অপেক্ষা করুন।');
+              }
+            } catch (dupErr) {
+              if (dupErr && dupErr.message && dupErr.message.indexOf('ইতিমধ্যে') !== -1) throw dupErr;
+              // যাচাই ব্যর্থ হলে (যেমন লগইন ছাড়া) জমা চালিয়ে যাও
+            }
+            record.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            await firebase.firestore().collection('teacherApplications').add(record);
+          }
+          SEMSLoader.hide();
+          document.getElementById('teacherApplyForm').hidden = true;
+          okBox.textContent = 'আবেদন জমা হয়েছে! অ্যাডমিন অনুমোদন দিলে এই ইমেইল (' + email + ') দিয়ে রেজিস্ট্রেশন করলেই আপনার শিক্ষকের অ্যাকাউন্ট তৈরি হবে।';
+          okBox.hidden = false;
+          if (window.SEMSToast) SEMSToast.success('আবেদন জমা হয়েছে!');
+        } catch (err) {
+          SEMSLoader.hide();
+          errBox.textContent = err && err.message ? err.message : 'আবেদন জমা দেওয়া যায়নি। আবার চেষ্টা করুন।';
+          errBox.hidden = false;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

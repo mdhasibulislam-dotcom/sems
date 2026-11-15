@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>লগইন — SEMS</title>
-  <link rel="stylesheet" href="css/global.css?v=3">
-  <link rel="stylesheet" href="css/auth.css?v=3">
-  <link rel="stylesheet" href="css/components.css?v=3">
-  <link rel="stylesheet" href="css/responsive.css?v=3">
+  <link rel="stylesheet" href="css/global.css?v=4">
+  <link rel="stylesheet" href="css/auth.css?v=4">
+  <link rel="stylesheet" href="css/components.css?v=4">
+  <link rel="stylesheet" href="css/responsive.css?v=4">
 </head>
 <body class="auth-page">
   <div id="loader" class="loader-overlay" hidden><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
@@ -46,6 +46,7 @@
       </button>
 
       <p class="auth-switch">নতুন শিক্ষার্থী? <a href="register.html">রেজিস্ট্রেশন করুন</a></p>
+      <p class="auth-switch">শিক্ষক হতে চান? <a href="teacher-apply.html">শিক্ষক হিসেবে আবেদন করুন</a></p>
       <p class="auth-back"><a href="index.html"><span class="ic" data-icon="arrowLeft"></span> হোমে ফিরুন</a></p>
     </div>
   </main>
@@ -55,15 +56,15 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-  <script src="js/firebase/config.js?v=3"></script>
-  <script src="js/firebase/auth.js?v=3"></script>
-  <script src="js/firebase/firestore.js?v=3"></script>
-  <script src="js/core/helpers.js?v=3"></script>
-  <script src="js/core/router.js?v=3"></script>
-  <script src="js/core/app.js?v=3"></script>
-  <script src="js/components/icons.js?v=3"></script>
-  <script src="js/components/loader.js?v=3"></script>
-  <script src="js/components/toast.js?v=3"></script>
+  <script src="js/firebase/config.js?v=4"></script>
+  <script src="js/firebase/auth.js?v=4"></script>
+  <script src="js/firebase/firestore.js?v=4"></script>
+  <script src="js/core/helpers.js?v=4"></script>
+  <script src="js/core/router.js?v=4"></script>
+  <script src="js/core/app.js?v=4"></script>
+  <script src="js/components/icons.js?v=4"></script>
+  <script src="js/components/loader.js?v=4"></script>
+  <script src="js/components/toast.js?v=4"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       // লোডার আটকে থাকলে সরিয়ে দাও — পুরনো ক্যাশের CSS-এও যাতে না আটকায়

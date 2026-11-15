@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>রেজিস্ট্রেশন — SEMS</title>
-  <link rel="stylesheet" href="css/global.css">
-  <link rel="stylesheet" href="css/auth.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/global.css?v=4">
+  <link rel="stylesheet" href="css/auth.css?v=4">
+  <link rel="stylesheet" href="css/components.css?v=4">
+  <link rel="stylesheet" href="css/responsive.css?v=4">
 </head>
 <body class="auth-page">
   <div id="loader" class="loader-overlay" hidden><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
@@ -41,12 +41,7 @@
           <span>মোবাইল নম্বর *</span>
           <input type="tel" id="phone" placeholder="01XXXXXXXXX" required autocomplete="tel">
         </label>
-        <fieldset class="field role-field">
-          <legend>আপনি কে? *</legend>
-          <label class="radio-pill"><input type="radio" name="role" value="student" checked> <span class="ic" data-icon="graduationCap"></span> শিক্ষার্থী (Student)</label>
-          <label class="radio-pill"><input type="radio" name="role" value="teacher"> <span class="ic" data-icon="users"></span> শিক্ষক (Teacher)</label>
-        </fieldset>
-        <p class="hint">অ্যাডমিন নিজে রেজিস্টার করতে পারবেন না — অ্যাডমিন অ্যাকাউন্ট শুধু অ্যাডমিন তৈরি করেন।</p>
+        <p class="hint">রেজিস্ট্রেশন করলে শিক্ষার্থীর অ্যাকাউন্ট তৈরি হবে। শিক্ষক হতে চাইলে প্রথমে শিক্ষক আবেদন ফরম পূরণ করে অ্যাডমিনের অনুমোদন নিতে হবে।</p>
         <label class="field">
           <span>পাসওয়ার্ড * (কমপক্ষে ৮ অক্ষর)</span>
           <input type="password" id="password" placeholder="কমপক্ষে ৮ অক্ষরের পাসওয়ার্ড" required autocomplete="new-password" minlength="8">
@@ -64,6 +59,7 @@
       </button>
 
       <p class="auth-switch">ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="login.html">লগইন করুন</a></p>
+      <p class="auth-switch">শিক্ষক হতে চান? <a href="teacher-apply.html">শিক্ষক হিসেবে আবেদন করুন</a></p>
       <p class="auth-back"><a href="index.html"><span class="ic" data-icon="arrowLeft"></span> হোমে ফিরুন</a></p>
     </div>
   </main>
@@ -73,15 +69,15 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-  <script src="js/firebase/config.js"></script>
-  <script src="js/firebase/auth.js"></script>
-  <script src="js/firebase/firestore.js"></script>
-  <script src="js/core/helpers.js"></script>
-  <script src="js/core/router.js"></script>
-  <script src="js/core/app.js"></script>
-  <script src="js/components/icons.js"></script>
-  <script src="js/components/loader.js"></script>
-  <script src="js/components/toast.js"></script>
+  <script src="js/firebase/config.js?v=4"></script>
+  <script src="js/firebase/auth.js?v=4"></script>
+  <script src="js/firebase/firestore.js?v=4"></script>
+  <script src="js/core/helpers.js?v=4"></script>
+  <script src="js/core/router.js?v=4"></script>
+  <script src="js/core/app.js?v=4"></script>
+  <script src="js/components/icons.js?v=4"></script>
+  <script src="js/components/loader.js?v=4"></script>
+  <script src="js/components/toast.js?v=4"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       if (window.SEMS && SEMS.isDemo) document.getElementById('demoNotice').hidden = false;
@@ -98,7 +94,6 @@
         const email = document.getElementById('email').value.trim();
         const username = document.getElementById('username').value.trim().toLowerCase();
         const phone = document.getElementById('phone').value.trim();
-        const role = (document.querySelector('input[name="role"]:checked') || {}).value || 'student';
         const password = document.getElementById('password').value;
         const confirm = document.getElementById('confirmPassword').value;
 
@@ -111,7 +106,7 @@
 
         SEMSLoader.show();
         try {
-          const user = await SEMSAuth.signUp({ name, email, username, phone, password, role });
+          const user = await SEMSAuth.signUp({ name, email, username, phone, password });
           SEMSToast.success('রেজিস্ট্রেশন সফল হয়েছে!');
           SEMSRouter.goToDashboard(user);
         } catch (err) {

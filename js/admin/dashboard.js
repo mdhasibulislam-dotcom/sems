@@ -5,7 +5,11 @@
 document.addEventListener('DOMContentLoaded', async function () {
   var user;
   try { user = await SEMSAdmin.init('dashboard'); } catch (e) { return; }
-  document.getElementById('welcomeText').textContent =
+  // admin/dashboard.html-এ welcomeText এলিমেন্ট নেই (শুধু
+  // student/teacher ড্যাশবোর্ডে আছে) — গার্ড ছাড়া এখানে থ্রো
+  // করে পুরো ড্যাশবোর্ড লোড বন্ধ হয়ে যেতো।
+  var welcomeEl = document.getElementById('welcomeText');
+  if (welcomeEl) welcomeEl.textContent =
     'স্বাগতম, ' + (user.displayName || user.name || user.email || 'অ্যাডমিন') + '!';
   try {
     var students = await SEMSAdmin.getStudents();
@@ -13,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     var batches = await SEMSAdmin.getBatches();
     var classes = await SEMSAdmin.getClasses();
     var pending = await SEMSAdmin.getPendingAdmissions();
+    var pendingTeachers = await SEMSAdmin.getPendingTeacherApplications();
     var notices = await SEMSAdmin.getNotices();
     var lectures = await SEMSAdmin.getLectures();
     var exams = await SEMSAdmin.getExams();
@@ -20,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('statTeachers').textContent = SEMSAdmin.bnDigits(teachers.length);
     document.getElementById('statBatches').textContent = SEMSAdmin.bnDigits(batches.length);
     document.getElementById('statPending').textContent = SEMSAdmin.bnDigits(pending.length);
+    document.getElementById('statTeacherRequests').textContent = SEMSAdmin.bnDigits(pendingTeachers.length);
     var today = SEMSAdmin.todayKey();
     var todayClasses = classes.filter(function (c) {
       var d = SEMSAdmin.toDate(c.date);

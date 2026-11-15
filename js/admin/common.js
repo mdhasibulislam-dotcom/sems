@@ -3,11 +3,11 @@
  * Firestore পড়া/লেখা, ডেমো মোডে localStorage (sems_demo_*) ফলব্যাক।
  *
  * অ্যাডমিনের সুযোগ পূর্ণ: সব কালেকশন পড়া/লেখা যায় (Firestore
- * Rules-এ isAdmin)। শিক্ষক যোগ করা: ক্লায়েন্ট কোড দিয়ে অন্য
- * কারো Auth অ্যাকাউন্ট বানানো যায় না — শিক্ষক নিজে রেজিস্টার
- * করবেন, তারপর অ্যাডমিন তার users ডকের role 'teacher' করে দেন
- * (add-teacher.html), অথবা Firebase Console > Authentication-এ
- * অ্যাকাউন্ট বানিয়ে users/{uid} ডকে role বসানো যায়।
+ * Rules-এ isAdmin)। শিক্ষক যোগ করার নতুন উপায়: teacher-apply.html-এ
+ * পাবলিক আবেদন → অ্যাডমিন teacher-requests.html-এ অনুমোদন →
+ * অনুমোদিত ইমেইল দিয়ে রেজিস্টার করলে role 'teacher' হয়
+ * (js/firebase/auth.js-এ যাচাই)। add-teacher.html এখনো আছে —
+ * ইতিমধ্যে রেজিস্টার করা ইউজারকে সরাসরি teacher করার জন্য।
  *
  * ডেমো তথ্য সবসময় "ডেমো / নমুনা" লেবেলসহ দেখানো হয় — এগুলো আসল
  * ডেটা নয়, শুধু UI দেখার জন্য নমুনা। আসল ডেটা Firestore-এ
@@ -15,12 +15,10 @@
  *
  * Firestore কালেকশন:
  * users, admissions, students, batches, courses, classes, lectures,
- * notices, exams, assignments, attendance, results, submissions, settings
+ * notices, exams, assignments, attendance, results, submissions,
+ * settings, teacherApplications
  *
  * নিয়মের ঘাটতি (Rules-এ নেই, তাই আসল Firebase-এ লেখা ব্যর্থ হবে):
- * - courses কালেকশনের কোনো match ব্লক firestore.rules-এ নেই —
- *   অ্যাডমিন কোর্স বানাতে গেলে permission-denied আসবে যতক্ষণ না
- *   Rules-এ courses-এর জন্য allow লেখা হয়।
  * - notifications নামে আলাদা কালেকশন Rules-এ নেই; তাই
  *   notifications.html নোটিশ + সাম্প্রতিক কার্যকলাপ দেখায়,
  *   নতুন কালেকশনে লেখে না।
@@ -156,6 +154,13 @@
         { id: 'demo-a1', uid: 'demo-s6', fullName: 'নতুন আবেদনকারী ১', email: 'apply1@demo.sems', mobile: '01700000006', collegeName: 'নমুনা কলেজ', courseBatch: 'demo-b1', status: 'pending', createdAt: isoDaysFromNow(-1, 9, 0) },
         { id: 'demo-a2', uid: 'demo-s7', fullName: 'নতুন আবেদনকারী ২', email: 'apply2@demo.sems', mobile: '01700000007', collegeName: 'নমুনা কলেজ', courseBatch: 'demo-b3', status: 'pending', createdAt: isoDaysFromNow(0, 8, 0) },
         { id: 'demo-a3', uid: 'demo-s1', fullName: 'নমুনা শিক্ষার্থী ১', email: 'student1@demo.sems', mobile: '01700000001', collegeName: 'নমুনা কলেজ', courseBatch: 'demo-b1', status: 'approved', createdAt: isoDaysFromNow(-10, 9, 0) }
+      ];
+    },
+    'sems_demo_teacher_applications': function () {
+      return [
+        { id: 'demo-ta1', fullName: 'নমুনা শিক্ষক আবেদনকারী ১', email: 'apply-teacher1@demo.sems', mobile: '01700000021', institution: 'নমুনা কলেজ', subjects: ['পদার্থবিজ্ঞান'], subject: 'পদার্থবিজ্ঞান', qualification: 'বিএসসি (অনার্স) পদার্থবিজ্ঞান', experience: '৩–৫ বছর', address: 'নমুনা ঠিকানা', status: 'pending', createdAt: isoDaysFromNow(-1, 9, 0) },
+        { id: 'demo-ta2', fullName: 'নমুনা শিক্ষক আবেদনকারী ২', email: 'apply-teacher2@demo.sems', mobile: '01700000022', institution: 'নমুনা স্কুল', subjects: ['রসায়ন', 'জীববিজ্ঞান'], subject: 'রসায়ন, জীববিজ্ঞান', qualification: 'এমএসসি রসায়ন', experience: '১–৩ বছর', address: 'নমুনা ঠিকানা', status: 'pending', createdAt: isoDaysFromNow(0, 8, 0) },
+        { id: 'demo-ta3', fullName: 'নমুনা শিক্ষক ৩', email: 'apply-teacher3@demo.sems', mobile: '01700000023', institution: 'নমুনা কলেজ', subjects: ['উচ্চতর গণিত'], subject: 'উচ্চতর গণিত', qualification: 'বিএসসি গণিত', experience: '৫ বছরের বেশি', address: 'নমুনা ঠিকানা', status: 'approved', createdAt: isoDaysFromNow(-10, 9, 0) }
       ];
     },
     'sems_demo_classes': function () {
@@ -364,6 +369,17 @@
     },
     getPendingAdmissions: async function () {
       var all = await SEMSAdmin.getAdmissions();
+      return all.filter(function (a) { return (a.status || 'pending') === 'pending'; });
+    },
+    // শিক্ষক আবেদন (teacherApplications): পাবলিক ফরম থেকে আসে।
+    getTeacherApplications: async function () {
+      var list = isDemo()
+        ? demoList('sems_demo_teacher_applications', DEMO_SEEDS['sems_demo_teacher_applications'])
+        : (isReady() ? await firestoreList('teacherApplications') : []);
+      return sortByDateDesc(list, 'createdAt');
+    },
+    getPendingTeacherApplications: async function () {
+      var all = await SEMSAdmin.getTeacherApplications();
       return all.filter(function (a) { return (a.status || 'pending') === 'pending'; });
     },
     getCourses: async function () {
@@ -577,6 +593,28 @@
         return;
       }
       await db().collection('admissions').doc(uid).set({ status: 'rejected' }, { merge: true });
+    },
+    // শিক্ষক আবেদন অনুমোদন/বাতিল: শুধু status বদলায়। অনুমোদনের
+    // পর আবেদনকারীকে একই ইমেইল দিয়ে রেজিস্টার করতে হয় — তখন
+    // auth.js অনুমোদিত আবেদন দেখে role 'teacher' দিয়ে দেয়।
+    // আগে রেজিস্টার করা থাকলে add-teacher.html দিয়ে role বদলাতে হয়।
+    approveTeacherApplication: async function (application) {
+      if (isDemo()) {
+        var list = demoList('sems_demo_teacher_applications', DEMO_SEEDS['sems_demo_teacher_applications']);
+        list.forEach(function (a) { if (a.id === application.id) a.status = 'approved'; });
+        demoSave('sems_demo_teacher_applications', list);
+        return;
+      }
+      await db().collection('teacherApplications').doc(application.id).set({ status: 'approved' }, { merge: true });
+    },
+    rejectTeacherApplication: async function (application) {
+      if (isDemo()) {
+        var list2 = demoList('sems_demo_teacher_applications', DEMO_SEEDS['sems_demo_teacher_applications']);
+        list2.forEach(function (a) { if (a.id === application.id) a.status = 'rejected'; });
+        demoSave('sems_demo_teacher_applications', list2);
+        return;
+      }
+      await db().collection('teacherApplications').doc(application.id).set({ status: 'rejected' }, { merge: true });
     },
     updateSettings: async function (data) {
       if (isDemo()) {

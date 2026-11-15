@@ -27,6 +27,32 @@
     return err;
   }
 
+  // অনুমোদিত শিক্ষক আবেদন আছে কিনা (ইমেইল দিয়ে) — রেজিস্ট্রেশনের
+  // সময় রোল ঠিক করতে। একটিমাত্র ফিল্ডে (email) ফিল্টার করা হয়,
+  // যাতে Firestore-এ কম্পোজিট ইনডেক্স না লাগে; status ক্লায়েন্টে
+  // যাচাই করা হয়। Rules: পড়া যায় শুধু অ্যাডমিন বা নিজের ইমেইলের
+  // ডকুমেন্ট — রেজিস্টারের সময় নতুন ইউজার লগইন অবস্থায় থাকে।
+  async function isApprovedTeacherEmail(email) {
+    var em = (email || '').trim().toLowerCase();
+    if (!em) return false;
+    if (SEMS.isDemo) {
+      try {
+        var list = JSON.parse(localStorage.getItem('sems_demo_teacher_applications') || '[]');
+        return list.some(function (a) {
+          return (a.email || '').toLowerCase() === em && a.status === 'approved';
+        });
+      } catch (e) { return false; }
+    }
+    if (!SEMS.firebaseReady) return false;
+    try {
+      var snap = await firebase.firestore().collection('teacherApplications')
+        .where('email', '==', em).limit(5).get();
+      var ok = false;
+      snap.forEach(function (doc) { if (doc.data().status === 'approved') ok = true; });
+      return ok;
+    } catch (e) { return false; }
+  }
+
   // Firestore থেকে ইউজারের প্রোফাইল (রোলসহ) পড়া
   async function fetchProfile(uid) {
     var db = firebase.firestore();
@@ -134,13 +160,15 @@
       var fbUser = result.user;
       var profile = await fetchProfile(fbUser.uid);
       if (!profile) {
-        // প্রথমবার Google সাইন-ইন: ডিফল্ট রোল student দিয়ে প্রোফাইল তৈরি
+        // প্রথমবার Google সাইন-ইন: অনুমোদিত শিক্ষক আবেদন থাকলে
+        // teacher, নাহলে student দিয়ে প্রোফাইল তৈরি।
+        var gRole = (await isApprovedTeacherEmail(fbUser.email)) ? 'teacher' : 'student';
         profile = {
           name: fbUser.displayName || '',
           email: fbUser.email,
           username: '',
           phone: '',
-          role: 'student',
+          role: gRole,
           admissionCompleted: false,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
@@ -158,9 +186,12 @@
       };
     },
 
-    // নতুন অ্যাকাউন্ট — রোল শুধু student / teacher (admin নয়)
+    // নতুন অ্যাকাউন্ট — রেজিস্ট্রেশন মানেই শিক্ষার্থী (student)।
+    // শিক্ষক হতে চাইলে আগে teacher-apply.html-এ আবেদন করে
+    // অ্যাডমিনের অনুমোদন নিতে হয়; অনুমোদিত ইমেইল দিয়ে রেজিস্টার
+    // করলেই role 'teacher' হয়। data.role পাঠানো হলেও তা উপেক্ষা
+    // করা হয় — কেউ নিজে থেকে teacher/admin বেছে নিতে পারে না।
     signUp: async function (data) {
-      if (data.role === 'admin') throw demoErr('auth/invalid-role', 'অ্যাডমিন নিজে রেজিস্টার করতে পারবে না।');
       if (SEMS.isDemo) {
         var users = demoUsers();
         if (users.some(function (u) { return u.email === data.email; })) {
@@ -169,6 +200,7 @@
         if (users.some(function (u) { return u.username === data.username; })) {
           throw demoErr('auth/username-taken', 'এই ইউজারনেমটি ইতিমধ্যে নেওয়া হয়েছে।');
         }
+        var role = (await isApprovedTeacherEmail(data.email)) ? 'teacher' : 'student';
         var user = {
           uid: 'demo-' + Date.now(),
           email: data.email,
@@ -176,7 +208,7 @@
           displayName: data.name,
           username: data.username,
           phone: data.phone,
-          role: data.role,
+          role: role,
           admissionCompleted: false,
           password: data.password
         };
@@ -193,13 +225,16 @@
       var cred = await firebase.auth().createUserWithEmailAndPassword(data.email, data.password);
       var uid = cred.user.uid;
       var db = firebase.firestore();
+      // নতুন অ্যাকাউন্ট লগইন অবস্থায় আছে — অনুমোদিত শিক্ষক
+      // আবেদন থাকলে teacher, নাহলে student।
+      var fbRole = (await isApprovedTeacherEmail(data.email)) ? 'teacher' : 'student';
       var batch = db.batch();
       batch.set(db.collection('users').doc(uid), {
         name: data.name,
         email: data.email,
         username: data.username,
         phone: data.phone,
-        role: data.role,
+        role: fbRole,
         admissionCompleted: false,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -207,7 +242,7 @@
       await batch.commit();
       return {
         uid: uid, email: data.email, name: data.name, displayName: data.name,
-        username: data.username, phone: data.phone, role: data.role, admissionCompleted: false
+        username: data.username, phone: data.phone, role: fbRole, admissionCompleted: false
       };
     },
 

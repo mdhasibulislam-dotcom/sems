@@ -234,3 +234,19 @@ python3 -m http.server 8000
 সহায়ক ফাইল: `css/admin.css` (global.css-এর ব্র্যান্ড রঙ), `js/admin/common.js` (গার্ড, নেভবার/সাইডবার, Firestore পড়া/লেখা, ডেমো ফলব্যাক, তারিখ/স্ট্যাটাস/গ্রেড হিসাব) ও প্রতি পেজের আলাদা JS (`js/admin/dashboard.js`, `students.js`, `add-student.js`, `admission-requests.js`, `student-details.js`, `teachers.js`, `add-teacher.js`, `teacher-details.js`, `courses.js`, `batches.js`, `classes.js`, `create-class.js`, `routine.js`, `lectures.js`, `upload-lecture.js`, `notices.js`, `notifications.js`, `assignments.js`, `exams.js`, `results.js`, `reports.js`, `settings.js`)।
 
 > **নিয়মের ঘাটতি (Firestore Rules-এ যোগ করতে হবে):** `courses` কালেকশনের কোনো match ব্লক `firebase/firestore.rules`-এ নেই — অ্যাডমিন কোর্স বানাতে গেলে আসল Firebase-এ permission-denied আসবে যতক্ষণ না Rules-এ courses-এর allow যোগ করে Publish করা হয়। `notifications` নামে আলাদা কালেকশন Rules-এ নেই — তাই `notifications.html` নতুন কালেকশনে লেখে না, নোটিশ + কার্যকলাপ দেখায়।
+
+## শিক্ষক আবেদন ও অনুমোদন (Teacher Application Flow)
+
+**সমস্যা ছিল:** রেজিস্ট্রেশন ফরমে যে কেউ "শিক্ষক" রোল বেছে অ্যাকাউন্ট খুলতে পারতো। এখন সেটা বন্ধ — রেজিস্ট্রেশন মানেই শিক্ষার্থী (student)।
+
+**নতুন ফ্লো (ছাত্র ভর্তি অনুমোদনের মতোই):**
+
+1. **আবেদন — `teacher-apply.html` (পাবলিক, লগইন লাগে না):** নাম, ইমেইল, মোবাইল, পড়ানোর বিষয়, যোগ্যতা, অভিজ্ঞতা, বর্তমান প্রতিষ্ঠান, ঠিকানা দিয়ে আবেদন জমা হয় `teacherApplications` কালেকশনে, `status: 'pending'`।
+2. **অনুমোদন — `admin/teacher-requests.html`:** অ্যাডমিন বাকি/অনুমোদিত/বাতিল ফিল্টার ও নাম-ইমেইল-বিষয় খোঁজা দিয়ে আবেদন দেখেন; অনুমোদনে শুধু `status: 'approved'` হয় (বাতিলে `'rejected'`)। ড্যাশবোর্ডে বাকি শিক্ষক অনুরোধের সংখ্যা দেখা যায়।
+3. **রেজিস্ট্রেশন — `register.html` / Google সাইন-ইন:** অনুমোদিত ইমেইল দিয়ে রেজিস্টার করলে `js/firebase/auth.js` অনুমোদিত আবেদন যাচাই করে `role: 'teacher'` দিয়ে অ্যাকাউন্ট তৈরি করে; অনুমোদন না থাকলে সবসময় `role: 'student'`।
+
+**মনে রাখবেন:**
+- অনুমোদনের আগেই রেজিস্টার করা থাকলে আবেদন অনুমোদনে রোল বদলায় না — তখন `admin/add-teacher.html` দিয়ে ইমেইল খুঁজে role `teacher` করতে হয়।
+- অ্যাডমিন নিজে রেজিস্টার করতে পারে না — আগের মতোই Firebase Console থেকে `users/{uid}` ডকে `role: 'admin'` বসাতে হয়।
+- Rules (`firebase/firestore.rules`, `teacherApplications` ব্লক): তৈরি (create) যে কেউ করতে পারে; পড়া শুধু অ্যাডমিন বা নিজের ইমেইলের আবেদনকারী; আপডেট/মুছে ফেলা শুধু অ্যাডমিন। নতুন Rules Publish করতে হবে।
+- ডেমো মোডে আবেদন `sems_demo_teacher_applications` (localStorage)-এ জমা হয়, অনুমোদনও ডেমোতেই কাজ করে।
