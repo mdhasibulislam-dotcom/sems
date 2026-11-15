@@ -1,33 +1,27 @@
 /* SEMS — js/firebase/config.js | Phase 1
  * ============================================================
- * TODO (বাংলা): আসল Firebase কনফিগ এখানে বসান
+ * Firebase কনফিগ বসানো হয়েছে — 2026-11-15
+ * প্রজেক্ট: educational-systems-a4eaa
  * ------------------------------------------------------------
- * ১. Firebase Console (https://console.firebase.google.com) এ
- *    নতুন প্রজেক্ট তৈরি করুন।
- * ২. Project Settings > Your apps > Web app (</>) থেকে
- *    firebaseConfig অবজেক্টটি কপি করুন।
- * ৩. নিচের PLACEHOLDER মানগুলো আপনার আসল মান দিয়ে বদলান।
- *    আসল apiKey / projectId ছাড়া Firebase কাজ করবে না।
- * ৪. Authentication > Sign-in method-এ Email/Password ও
- *    Google চালু করুন।
- * ৫. Firestore Database তৈরি করুন (Production mode)।
- * ৬. firebase/firestore.rules ও storage.rules ডেপ্লয় করুন।
+ * Authentication > Sign-in method-এ Email/Password ও Google
+ * চালু আছে কিনা দেখে নিন, আর Firestore Database তৈরি আছে
+ * কিনা দেখে নিন। firebase/firestore.rules ও storage.rules
+ * ডেপ্লয় করতে হবে।
  *
- * যতক্ষণ কনফিগ placeholder থাকবে, অ্যাপটি DEMO MODE-এ চলবে:
- * লগইন/রেজিস্ট্রেশন/ভর্তি ফরম localStorage-এ কাজ করবে, যাতে
- * UI ফ্লো Firebase ছাড়াই পরীক্ষা করা যায়।
+ * এই apiKey হলো ওয়েব ক্লায়েন্ট key — ফ্রন্টএন্ডে থাকা স্বাভাবিক।
+ * আসল নিরাপত্তা Firebase Security Rules দিয়ে, এই key দিয়ে নয়।
+ * Service Account-এর private key কখনো এখানে বসাবেন না।
  * ============================================================
- * DO NOT invent real Firebase keys, URLs or project IDs here.
  */
 (function () {
   var firebaseConfig = {
-    apiKey: 'YOUR_API_KEY',
-    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    appId: 'YOUR_APP_ID'
-    // measurementId: 'YOUR_MEASUREMENT_ID' // (ঐচ্ছিক, Analytics ব্যবহার করলে)
+    apiKey: 'AIzaSyBw4UnTnWR_5IV2VUNBbfyrYQNLbJbP2is',
+    authDomain: 'educational-systems-a4eaa.firebaseapp.com',
+    projectId: 'educational-systems-a4eaa',
+    storageBucket: 'educational-systems-a4eaa.firebasestorage.app',
+    messagingSenderId: '304654413488',
+    appId: '1:304654413488:web:1328af7c06e33b87aed575',
+    measurementId: 'G-CSPREP008J'
   };
 
   // Placeholder কিনা চেক করা — কোনো একটা মানও 'YOUR_' দিয়ে শুরু
