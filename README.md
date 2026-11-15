@@ -3,7 +3,7 @@
 কোচিং/শিক্ষা প্রতিষ্ঠান পরিচালনার প্ল্যাটফর্ম — শিক্ষার্থী, শিক্ষক ও অ্যাডমিন প্যানেল।
 টেক: HTML, CSS, Vanilla JavaScript, Firebase (Auth, Firestore, Storage, Cloud Messaging, Hosting)।
 
-> **বর্তমান অবস্থা: Phase 3 সম্পূর্ণ।** Phase 4/5 এখনো বানানো হয়নি — অ্যাডমিন ড্যাশবোর্ড প্লেসহোল্ডার।
+> **বর্তমান অবস্থা: Phase 4 সম্পূর্ণ।** Phase 5 এখনো বানানো হয়নি।
 
 ---
 
@@ -199,3 +199,38 @@ python3 -m http.server 8000
 
 - **Phase 4 — Admin Panel:** রুটিন, ব্যাচ, লেকচার/স্লাইড (প্রকাশের তারিখসহ), নোটিশ, পরীক্ষা, সেটিংস। সঙ্গে `classes`, `assignments`, `submissions` কালেকশনের Firestore Rules যোগ করতে হবে।
 - **Phase 5 — Exam/Attendance/Notifications:** অনলাইন পরীক্ষার ইঞ্জিন, উপস্থিতি নেওয়া, FCM নোটিফিকেশন।
+
+## Phase 4 — Admin Panel / Routine / Batch (সম্পূর্ণ)
+
+অ্যাডমিনের সব পেজ বাংলায়, মোবাইল রেসপন্সিভ, সাইডবার নেভিগেশনসহ। প্রতিটি পেজ `SEMSRoleGuard.requireRole('admin')` দিয়ে সুরক্ষিত — লগইন না থাকলে `../login.html`, ভুল রোলে নিজের ড্যাশবোর্ড। গার্ড শেষ হলেই `SEMSLoader.hide()` কল হয়, তাই "লোড হচ্ছে..." আটকে থাকে না। Firebase চালু থাকলে (`SEMS.firebaseReady`) Firestore থেকে পড়ে/লেখে; ডেমো মোডে (`SEMS.isDemo`) localStorage-এর `sems_demo_*` নমুনা ডেটা দেখায় — সব নমুনা "ডেমো তথ্য" লেবেলসহ।
+
+**অ্যাডমিনের সুযোগ পূর্ণ:** রুটিন, ব্যাচ, লেকচার/স্লাইড (প্রকাশের তারিখসহ), নোটিশ, পরীক্ষা, শিক্ষার্থী/শিক্ষক ব্যবস্থাপনা ও সেটিংস — সবকিছু।
+
+| পেজ | যা করে | Firestore |
+|---|---|---|
+| `admin/dashboard.html` | স্বাগতম, মোট শিক্ষার্থী/শিক্ষক/ব্যাচ, বাকি ভর্তি আবেদন, আজকের ক্লাস, সর্বশেষ নোটিশ, সাম্প্রতিক লেকচার, আসন্ন পরীক্ষা | `users`, `students`, `batches`, `classes`, `admissions`, `notices`, `lectures`, `exams` |
+| `admin/students.html` | সব শিক্ষার্থীর তালিকা — ব্যাচ ফিল্টার + নাম/ইমেইল খোঁজা | `students`, `batches` |
+| `admin/add-student.html` | শিক্ষার্থী সরাসরি যোগ (students ডকে রেকর্ড; লগইন অ্যাকাউন্ট বানায় না — শিক্ষার্থীকে রেজিস্টার করতে হয়) | `students`-এ লেখা |
+| `admin/admission-requests.html` | ভর্তি আবেদন অনুমোদন/বাতিল — অনুমোদনে `admissions.status=approved` + `users.admissionCompleted=true` + `students` ডক | `admissions`, `users`, `students` |
+| `admin/student-details.html` | একক শিক্ষার্থীর বিস্তারিত (`?id=`) — প্রোফাইল, উপস্থিতির হার, রেজাল্ট | `students`, `attendance`, `results`, `batches` |
+| `admin/teachers.html` | সব শিক্ষকের তালিকা — বিষয় খোঁজা | `users` (`role == teacher`), `batches` |
+| `admin/add-teacher.html` | রেজিস্টার করা অ্যাকাউন্টকে ইমেইল দিয়ে খুঁজে তার `users` ডকের role `teacher` করা (ক্লায়েন্ট কোড দিয়ে অন্যের Auth অ্যাকাউন্ট বানানো যায় না) | `users` (পড়া + আপডেট) |
+| `admin/teacher-details.html` | একক শিক্ষকের বিস্তারিত (`?id=`) — প্রোফাইল, তার ব্যাচ ও ক্লাস | `users`, `batches`, `classes`, `students` |
+| `admin/courses.html` | কোর্সের তালিকা + নতুন কোর্স তৈরি | `courses`-এ লেখা/পড়া |
+| `admin/batches.html` | ব্যাচের তালিকা + নতুন ব্যাচ তৈরি (কোর্স + শিক্ষক বসিয়ে — এটাই শিক্ষকের পেজে আসল ডেটা দেখায়) | `batches`-এ লেখা/পড়া, `courses`, `users` |
+| `admin/classes.html` | সব ক্লাসের তালিকা — ব্যাচ ফিল্টার, মুছে ফেলা যায় | `classes`, `batches` |
+| `admin/create-class.html` | নতুন ক্লাস তৈরি (বিষয়, অধ্যায়, ব্যাচ, শিক্ষক, তারিখ, সময়, মাধ্যম, ক্লাস লিংক) | `classes`-এ লেখা |
+| `admin/routine.html` | পুরো রুটিন — সব ক্লাস তারিখ অনুযায়ী গ্রুপ করে, "আজ" ট্যাগসহ | `classes`, `batches` |
+| `admin/lectures.html` | সব লেকচারের তালিকা — খোঁজা, মুছে ফেলা যায় | `lectures`, `batches` |
+| `admin/upload-lecture.html` | লেকচার প্রকাশ (শিরোনাম, বিষয়, অধ্যায়, ব্যাচ, শিক্ষক, প্রকাশের তারিখ, PDF/স্লাইড/রেকর্ডিং লিংক) | `lectures`-এ লেখা (`published: true`) |
+| `admin/notices.html` | নোটিশ তৈরি/প্রকাশ + তালিকা + মুছে ফেলা | `notices`-এ লেখা/পড়া |
+| `admin/notifications.html` | নোটিফিকেশন কেন্দ্র — প্রকাশিত নোটিশ + সাম্প্রতিক কার্যকলাপ (আবেদন, পরীক্ষা, লেকচার) | `notices`, `admissions`, `exams`, `lectures` |
+| `admin/assignments.html` | অ্যাসাইনমেন্ট তৈরি + সব অ্যাসাইনমেন্টের তালিকা (জমার সংখ্যাসহ) | `assignments`-এ লেখা/পড়া |
+| `admin/exams.html` | পরীক্ষা তৈরি + সব পরীক্ষার তালিকা | `exams`-এ লেখা/পড়া |
+| `admin/results.html` | রেজাল্টের সার্বিক চিত্র — পরীক্ষা ফিল্টার, গড় ও সর্বোচ্চ নম্বর | `results`, `exams`, `students` |
+| `admin/reports.html` | রিপোর্ট — প্রতি ব্যাচে শিক্ষার্থী/ক্লাস সংখ্যা, উপস্থিতির হার, পরীক্ষার গড় নম্বর | `batches`, `students`, `classes`, `attendance`, `exams`, `results` |
+| `admin/settings.html` | সেটিংস — প্রতিষ্ঠানের সাধারণ তথ্য (`settings/general` ডক, শুধু অ্যাডমিন) | `settings`-এ পড়া/লেখা |
+
+সহায়ক ফাইল: `css/admin.css` (global.css-এর ব্র্যান্ড রঙ), `js/admin/common.js` (গার্ড, নেভবার/সাইডবার, Firestore পড়া/লেখা, ডেমো ফলব্যাক, তারিখ/স্ট্যাটাস/গ্রেড হিসাব) ও প্রতি পেজের আলাদা JS (`js/admin/dashboard.js`, `students.js`, `add-student.js`, `admission-requests.js`, `student-details.js`, `teachers.js`, `add-teacher.js`, `teacher-details.js`, `courses.js`, `batches.js`, `classes.js`, `create-class.js`, `routine.js`, `lectures.js`, `upload-lecture.js`, `notices.js`, `notifications.js`, `assignments.js`, `exams.js`, `results.js`, `reports.js`, `settings.js`)।
+
+> **নিয়মের ঘাটতি (Firestore Rules-এ যোগ করতে হবে):** `courses` কালেকশনের কোনো match ব্লক `firebase/firestore.rules`-এ নেই — অ্যাডমিন কোর্স বানাতে গেলে আসল Firebase-এ permission-denied আসবে যতক্ষণ না Rules-এ courses-এর allow যোগ করে Publish করা হয়। `notifications` নামে আলাদা কালেকশন Rules-এ নেই — তাই `notifications.html` নতুন কালেকশনে লেখে না, নোটিশ + কার্যকলাপ দেখায়।

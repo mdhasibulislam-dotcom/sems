@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>শিক্ষার্থীর বিস্তারিত — SEMS</title>
+  <link rel="stylesheet" href="../css/global.css?v=3">
+  <link rel="stylesheet" href="../css/dashboard.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/admin.css?v=3">
+  <link rel="stylesheet" href="../css/responsive.css?v=3">
+</head>
+<body>
+  <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+  <div id="toastRoot"></div>
+  <div id="navbarRoot"></div>
+
+  <div class="layout-with-sidebar">
+    <nav class="sems-sidebar admin-sidebar" id="sidebarRoot">
+      <a href="dashboard.html" data-page="dashboard"><span class="ic" data-icon="home"></span> ড্যাশবোর্ড</a>
+      <a href="students.html" data-page="students"><span class="ic" data-icon="users"></span> শিক্ষার্থী</a>
+      <a href="teachers.html" data-page="teachers"><span class="ic" data-icon="graduationCap"></span> শিক্ষক</a>
+      <a href="courses.html" data-page="courses"><span class="ic" data-icon="book"></span> কোর্স</a>
+      <a href="batches.html" data-page="batches"><span class="ic" data-icon="calendar"></span> ব্যাচ</a>
+      <a href="classes.html" data-page="classes"><span class="ic" data-icon="clock"></span> ক্লাস</a>
+      <a href="routine.html" data-page="routine"><span class="ic" data-icon="timer"></span> রুটিন</a>
+      <a href="lectures.html" data-page="lectures"><span class="ic" data-icon="video"></span> লেকচার</a>
+      <a href="notices.html" data-page="notices"><span class="ic" data-icon="megaphone"></span> নোটিশ</a>
+      <a href="assignments.html" data-page="assignments"><span class="ic" data-icon="edit"></span> অ্যাসাইনমেন্ট</a>
+      <a href="exams.html" data-page="exams"><span class="ic" data-icon="clipboard"></span> পরীক্ষা</a>
+      <a href="results.html" data-page="results"><span class="ic" data-icon="trophy"></span> রেজাল্ট</a>
+      <a href="reports.html" data-page="reports"><span class="ic" data-icon="fileText"></span> রিপোর্ট</a>
+      <a href="settings.html" data-page="settings"><span class="ic" data-icon="shield"></span> সেটিংস</a>
+    </nav>
+
+    <main class="container admin-main">
+      <div class="page-head">
+        <h1>শিক্ষার্থীর বিস্তারিত</h1>
+        <p>একজন শিক্ষার্থীর প্রোফাইল, উপস্থিতি ও রেজাল্ট।</p>
+      </div>
+      <span class="demo-badge" id="demoBadge" hidden>ডেমো তথ্য — এগুলো নমুনা ডেটা, আসল নয়</span>
+      <p><a href="students.html"><span class="ic" data-icon="arrowLeft"></span> শিক্ষার্থীর তালিকায় ফিরুন</a></p>
+      <div class="panel"><div id="detailWrap"><p class="muted">লোড হচ্ছে...</p></div></div>
+
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="../js/firebase/config.js?v=3"></script>
+  <script src="../js/firebase/auth.js?v=3"></script>
+  <script src="../js/firebase/firestore.js?v=3"></script>
+  <script src="../js/core/helpers.js?v=3"></script>
+  <script src="../js/core/router.js?v=3"></script>
+  <script src="../js/core/app.js?v=3"></script>
+  <script src="../js/core/auth-guard.js?v=3"></script>
+  <script src="../js/core/role-guard.js?v=3"></script>
+  <script src="../js/components/icons.js?v=3"></script>
+  <script src="../js/components/loader.js?v=3"></script>
+  <script src="../js/components/toast.js?v=3"></script>
+  <script src="../js/components/navbar.js?v=3"></script>
+  <script src="../js/admin/common.js?v=3"></script>
+  <script src="../js/admin/student-details.js?v=3"></script>
+</body>
+</html>

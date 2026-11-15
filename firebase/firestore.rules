@@ -65,6 +65,12 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // --- courses: অ্যাডমিন তৈরি/পরিচালনা; লগইন করা সবাই পড়ে ---
+    match /courses/{courseId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
     // --- batches: অ্যাডমিন তৈরি/পরিচালনা; শিক্ষক নিজের ব্যাচ পড়তে পারে; শিক্ষার্থী পড়তে পারে ---
     match /batches/{batchId} {
       allow read: if isSignedIn();
