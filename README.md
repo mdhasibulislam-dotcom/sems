@@ -36,7 +36,7 @@
 | `student/assignments.html` | অ্যাসাইনমেন্ট তালিকা, শেষ তারিখ, জমার অবস্থা; লেখা উত্তর / ফাইল লিংক জমা | `assignments`, জমা `submissions`-এ লেখার চেষ্টা (না পারলে এই ব্রাউজারে সংরক্ষণ) |
 | `student/exams.html` | আসন্ন/গত পরীক্ষা, সময়কাল, মোট নম্বর; পরীক্ষার তথ্য থাকলে "পরীক্ষা শুরু" (ইঞ্জিন Phase 5-এ) | `exams` |
 | `student/results.html` | পরীক্ষার নম্বর, গ্রেড (না থাকলে হিসাব করে), গড় নম্বর ও অগ্রগতি | `results` (`studentId == uid`) |
-| `student/notifications.html` | নোটিফিকেশন কেন্দ্র — নোটিশ + আজকের ক্লাস + আসন্ন পরীক্ষার রিমাইন্ডার | `notices`, `classes`, `exams` |
+| `student/notifications.html` | নোটিফিকেশন কেন্দ্র — নিজের নোটিফিকেশন (অপঠিত আগে), ক্লিক করলে পড়া চিহ্ন হয়ে সংশ্লিষ্ট পেজে যায়, "সব পড়া হয়েছে" বোতাম | `notifications` (নিজের `userId`) |
 
 সহায়ক ফাইল: `css/student.css` (global.css-এর ব্র্যান্ড রঙ), `js/student/common.js` (গার্ড, নেভবার/সাইডবার, Firestore পড়া, ডেমো ফলব্যাক, তারিখ/স্ট্যাটাস হিসাব) ও প্রতি পেজের আলাদা JS (`js/student/dashboard.js`, `profile.js`, `routine.js`, `lectures.js`, `lecture-details.js`, `notices.js`, `attendance.js`, `assignments.js`, `exams.js`, `results.js`, `notifications.js`)।
 
@@ -59,8 +59,9 @@
 | `teacher/assignments.html` | অ্যাসাইনমেন্ট তৈরি (শিরোনাম, বিষয়, ব্যাচ, শেষ তারিখ, বিবরণ) + নিজের অ্যাসাইনমেন্টের তালিকা ও জমার সংখ্যা | `assignments`-এ লেখা/পড়া (`teacherId`), জমা `submissions` থেকে গোনা |
 | `teacher/exams.html` | পরীক্ষা তৈরি (শিরোনাম, বিষয়, ব্যাচ, তারিখ, শুরুর সময়, সময়কাল, মোট নম্বর) + নিজের পরীক্ষার তালিকা | `exams`-এ লেখা/পড়া (`teacherId`) |
 | `teacher/results.html` | পরীক্ষা বেছে সেই ব্যাচের প্রত্যেক শিক্ষার্থীর নম্বর দেওয়া — নম্বর লিখলেই গ্রেড দেখায়, আগে দেওয়া নম্বরও দেখা যায় | `exams`, `students`, `results`-এ লেখা/পড়া (`examId, studentId, teacherId, marks, totalMarks, grade`) |
+| `teacher/notifications.html` | নোটিফিকেশন কেন্দ্র — নিজের নোটিফিকেশন (অপঠিত আগে), ক্লিক করলে পড়া চিহ্ন হয়ে সংশ্লিষ্ট পেজে যায়, "সব পড়া হয়েছে" বোতাম | `notifications` (নিজের `userId`) |
 
-সহায়ক ফাইল: `css/teacher.css` (global.css-এর ব্র্যান্ড রঙ, student.css-এর মতো মোবাইল রেসপন্সিভ), `js/teacher/common.js` (গার্ড, নেভবার/সাইডবার, Firestore পড়া/লেখা, ডেমো ফলব্যাক, গ্রেড হিসাব) ও প্রতি পেজের আলাদা JS (`js/teacher/dashboard.js`, `profile.js`, `my-classes.js`, `routine.js`, `students.js`, `attendance.js`, `lectures.js`, `upload-lecture.js`, `assignments.js`, `exams.js`, `results.js`)।
+সহায়ক ফাইল: `css/teacher.css` (global.css-এর ব্র্যান্ড রঙ, student.css-এর মতো মোবাইল রেসপন্সিভ), `js/teacher/common.js` (গার্ড, নেভবার/সাইডবার, Firestore পড়া/লেখা, ডেমো ফলব্যাক, গ্রেড হিসাব) ও প্রতি পেজের আলাদা JS (`js/teacher/dashboard.js`, `profile.js`, `my-classes.js`, `routine.js`, `students.js`, `attendance.js`, `lectures.js`, `upload-lecture.js`, `assignments.js`, `exams.js`, `results.js`, `notifications.js`)।
 
 **নোট — লেকচার ফাইল আপলোড নয়, লিংক:** Firebase Storage-এ ফাইল আপলোড করতে ৩ ফেব্রুয়ারি ২০২৬ থেকে Blaze (pay-as-you-go) প্ল্যান লাগে — Spark প্ল্যানে Storage বাকেট পাওয়া যায় না। তাই আপাতত PDF/স্লাইড/রেকর্ডিংয়ের লিংক নেওয়া হয় (কোডে মন্তব্যসহ লেখা আছে)।
 
@@ -233,7 +234,29 @@ python3 -m http.server 8000
 
 সহায়ক ফাইল: `css/admin.css` (global.css-এর ব্র্যান্ড রঙ), `js/admin/common.js` (গার্ড, নেভবার/সাইডবার, Firestore পড়া/লেখা, ডেমো ফলব্যাক, তারিখ/স্ট্যাটাস/গ্রেড হিসাব) ও প্রতি পেজের আলাদা JS (`js/admin/dashboard.js`, `students.js`, `add-student.js`, `admission-requests.js`, `student-details.js`, `teachers.js`, `add-teacher.js`, `teacher-details.js`, `courses.js`, `batches.js`, `classes.js`, `create-class.js`, `routine.js`, `lectures.js`, `upload-lecture.js`, `notices.js`, `notifications.js`, `assignments.js`, `exams.js`, `results.js`, `reports.js`, `settings.js`)।
 
-> **নিয়মের ঘাটতি (Firestore Rules-এ যোগ করতে হবে):** `courses` কালেকশনের কোনো match ব্লক `firebase/firestore.rules`-এ নেই — অ্যাডমিন কোর্স বানাতে গেলে আসল Firebase-এ permission-denied আসবে যতক্ষণ না Rules-এ courses-এর allow যোগ করে Publish করা হয়। `notifications` নামে আলাদা কালেকশন Rules-এ নেই — তাই `notifications.html` নতুন কালেকশনে লেখে না, নোটিশ + কার্যকলাপ দেখায়।
+> **নোট:** `courses` কালেকশনের নিয়ম এখন `firebase/firestore.rules`-এ আছে (অ্যাডমিন লিখতে পারে) — Rules Publish করলেই কাজ করবে। `notifications` কালেকশনের নিয়ম Phase 5-এ যোগ হয়েছে (নিচে দেখুন)।
+
+## নোটিফিকেশন সিস্টেম (Phase 5 — ইন-অ্যাপ)
+
+অ্যাডমিন নোটিশ দিলে বা শিক্ষক লেকচার/অ্যাসাইনমেন্ট/পরীক্ষা প্রকাশ করলে বা রেজাল্ট দিলে সংশ্লিষ্ট শিক্ষার্থী/শিক্ষক **ইন-অ্যাপ নোটিফিকেশন** পায় — `notifications` কালেকশনে প্রতি প্রাপকের জন্য একটি ডক লেখা হয় (`js/firebase/notifications.js`, `SEMSNotifications`)।
+
+**কে কী পায়:**
+
+| ঘটনা | কারা পায় | লিংক |
+|---|---|---|
+| অ্যাডমিন নোটিশ প্রকাশ (`admin/notices.html`) | সব শিক্ষার্থী + সব শিক্ষক | শিক্ষার্থী: `notices.html`, শিক্ষক: `dashboard.html` |
+| শিক্ষক/অ্যাডমিন লেকচার প্রকাশ | ওই ব্যাচের শিক্ষার্থীরা | `lectures.html` |
+| শিক্ষক/অ্যাডমিন অ্যাসাইনমেন্ট তৈরি | ওই ব্যাচের শিক্ষার্থীরা | `assignments.html` |
+| শিক্ষক/অ্যাডমিন পরীক্ষা তৈরি | ওই ব্যাচের শিক্ষার্থীরা | `exams.html` |
+| শিক্ষক রেজাল্ট দেয় | যাদের নম্বর দেওয়া হয়েছে, সেই শিক্ষার্থীরা | `results.html` |
+
+**যেভাবে দেখা যায়:** সব পেজের উপরের নেভবারে ঘণ্টা আইকন আছে — অপঠিত থাকলে লাল ব্যাজে সংখ্যা ওঠে। `student/notifications.html` ও `teacher/notifications.html`-এ তালিকা দেখা যায় (অপঠিত আগে), ক্লিক করলে পড়া হয়েছে বলে চিহ্নিত হয়ে সংশ্লিষ্ট পেজে যায়; "সব পড়া হয়েছে" বোতামে একসাথে চিহ্নিত হয়। অ্যাডমিনের ঘণ্টা `admin/notifications.html`-এ যায় (ব্যাজ নেই)।
+
+**মনে রাখবেন:**
+- এটা শুধু **ইন-অ্যাপ** নোটিফিকেশন — অ্যাপ খুললেই দেখা যাবে। ফোনে পুশ নোটিফিকেশন (FCM) এখানে নেই; সেটার জন্য Blaze (pay-as-you-go) প্ল্যান ও Cloud Functions লাগবে, পরে চালু করা যাবে (`js/firebase/notifications.js`-এর FCM স্টাব দেখুন)।
+- নোটিফিকেশন পাঠানো fire-and-forget — পাঠাতে ব্যর্থ হলেও মূল কাজ (নোটিশ/লেকচার/পরীক্ষা/রেজাল্ট সংরক্ষণ) আটকায় না।
+- Rules (`firebase/firestore.rules`, `notifications` ব্লক): লেখা শুধু অ্যাডমিন/শিক্ষক; পড়া ও পড়া-চিহ্ন শুধু নিজের ডক (বা অ্যাডমিন); মুছে ফেলা শুধু অ্যাডমিন। নতুন Rules Publish করতে হবে।
+- ডেমো মোডে নোটিফিকেশন `sems_demo_notifications` (localStorage)-এ জমা হয়, নমুনা ডেটা "ডেমো তথ্য" লেবেলসহ দেখায়।
 
 ## শিক্ষক আবেদন ও অনুমোদন (Teacher Application Flow)
 

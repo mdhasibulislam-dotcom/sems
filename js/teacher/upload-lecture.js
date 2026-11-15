@@ -45,6 +45,14 @@ document.addEventListener('DOMContentLoaded', async function () {
           batchId: batchId, date: dateVal + 'T10:00:00', publishDate: dateVal + 'T10:00:00',
           description: desc, pdfUrl: pdfUrl, slidesUrl: slidesUrl, recordingUrl: recordingUrl
         });
+        // নোটিফিকেশন: ব্যাচের শিক্ষার্থীদের জানানো (fire-and-forget)
+        if (window.SEMSNotifications) {
+          SEMSNotifications.sendToBatch(batchId, {
+            title: 'নতুন লেকচার: ' + title,
+            body: subject + (chapter ? ' — ' + chapter : ''),
+            type: 'lecture', link: 'lectures.html'
+          }).catch(function (e) { console.warn('[SEMS] লেকচার নোটিফিকেশন ব্যর্থ:', e && e.message); });
+        }
         if (msg) { msg.textContent = 'লেকচার প্রকাশ হয়েছে। শিক্ষার্থীরা এখন দেখতে পাবে।'; msg.hidden = false; }
         if (window.SEMSToast) SEMSToast.success('লেকচার প্রকাশ হয়েছে।');
         form.reset();

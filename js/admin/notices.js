@@ -59,6 +59,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     SEMSLoader.show();
     try {
       var rec = await SEMSAdmin.addNotice(user, data);
+      // নোটিফিকেশন (fire-and-forget — ব্যর্থ হলেও নোটিশ প্রকাশ আটকাবে না)
+      if (window.SEMSNotifications) {
+        var nData = { title: 'নতুন নোটিশ: ' + data.title, body: data.body, type: 'notice' };
+        SEMSNotifications.sendToAllStudents(Object.assign({}, nData, { link: 'notices.html' }))
+          .catch(function (e) { console.warn('[SEMS] নোটিশের নোটিফিকেশন ব্যর্থ:', e && e.message); });
+        SEMSNotifications.sendToAllTeachers(Object.assign({}, nData, { link: 'dashboard.html' }))
+          .catch(function (e) { console.warn('[SEMS] নোটিশের নোটিফিকেশন ব্যর্থ:', e && e.message); });
+      }
       notices.unshift(rec);
       render();
       SEMSLoader.hide();

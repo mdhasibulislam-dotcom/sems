@@ -65,6 +65,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     SEMSLoader.show();
     try {
       var rec = await SEMSAdmin.addExam(user, data);
+      // নোটিফিকেশন: ব্যাচের শিক্ষার্থীদের জানানো (fire-and-forget)
+      if (window.SEMSNotifications) {
+        SEMSNotifications.sendToBatch(data.batchId, {
+          title: 'নতুন পরীক্ষা: ' + data.title,
+          body: (data.subject || '') + ' • ' + (data.date || ''),
+          type: 'exam', link: 'exams.html'
+        }).catch(function (e) { console.warn('[SEMS] পরীক্ষা নোটিফিকেশন ব্যর্থ:', e && e.message); });
+      }
       exams.push(rec);
       exams = SEMSAdmin.sortByDateAsc(exams, 'date');
       render();

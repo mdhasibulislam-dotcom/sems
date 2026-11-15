@@ -149,6 +149,17 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // --- notifications (Phase 5, ইন-অ্যাপ): অ্যাডমিন/শিক্ষক লেখে,
+    // নিজের নোটিফিকেশন শুধু নিজে পড়ে/পড়া চিহ্ন দেয়; অ্যাডমিন সব পারে ---
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn()
+        && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAdmin() || isTeacher();
+      allow update: if isSignedIn()
+        && (resource.data.userId == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+
     // --- settings: শুধু অ্যাডমিন ---
     match /settings/{doc} {
       allow read, write: if isAdmin();

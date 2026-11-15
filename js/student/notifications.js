@@ -1,68 +1,83 @@
-/* SEMS — js/student/notifications.js | Phase 2
- * নোটিফিকেশন কেন্দ্র: নোটিশ + আজকের ক্লাস + আসন্ন পরীক্ষার
- * রিমাইন্ডার এক জায়গায়। "সব পড়া হয়েছে" localStorage-এ চিহ্ন রাখে।
+/* SEMS — js/student/notifications.js | Phase 5 (Notifications)
+ * নোটিফিকেশন কেন্দ্র: `notifications` কালেকশন থেকে নিজের
+ * নোটিফিকেশন পড়া হয় (অপঠিত আগে, তারপর নতুন থেকে পুরনো)।
+ * ক্লিক করলে পড়া হয়েছে বলে চিহ্নিত হয়ে লিংকের পেজে যায়;
+ * "সব পড়া হয়েছে" বোতামে সবগুলো একসাথে চিহ্নিত হয়।
+ * পুরনো localStorage-ভিত্তিক রিমাইন্ডার (Phase 2) বাদ দেওয়া
+ * হয়েছে — এখন আসল ঘটনার (নোটিশ/লেকচার/পরীক্ষা/রেজাল্ট)
+ * নোটিফিকেশন আসে।
  */
 document.addEventListener('DOMContentLoaded', async function () {
   var user;
   try { user = await SEMSStudent.init('notifications'); } catch (e) { return; }
 
-  var READ_KEY = 'sems_notifications_read_at';
+  function typeIcon(type) {
+    return { notice: 'megaphone', lecture: 'book', assignment: 'edit', exam: 'clipboard', result: 'trophy' }[type] || 'bell';
+  }
+  function typeLabel(type) {
+    return window.SEMSNotifications ? SEMSNotifications.typeLabel(type) : 'নোটিফিকেশন';
+  }
+  function fmtWhen(n) {
+    var d = SEMSStudent.toDate(n.createdAt);
+    return d ? SEMSStudent.fmtDate(d.toISOString()) : '';
+  }
 
   function render(items) {
     var wrap = document.getElementById('notificationsWrap');
     if (!wrap) return;
     if (!items.length) {
       wrap.innerHTML = SEMSStudent.emptyState('bell', 'কোনো নোটিফিকেশন নেই',
-        'নতুন নোটিশ, ক্লাস বা পরীক্ষার রিমাইন্ডার এলে এখানে দেখা যাবে।');
+        'নতুন নোটিশ, লেকচার, অ্যাসাইনমেন্ট, পরীক্ষা বা রেজাল্ট এলে এখানে দেখা যাবে।');
       return;
     }
-    var readAt = null;
-    try { readAt = localStorage.getItem(READ_KEY); } catch (e) { readAt = null; }
     wrap.innerHTML = items.map(function (n) {
-      var isNew = !readAt || (n.sortDate && new Date(n.sortDate).toISOString() > readAt);
-      return '<div class="list-item"><h3>' + (isNew ? '<span class="unread-dot"></span>' : '') + SEMSStudent.esc(n.title) +
-        ' <span class="badge ' + (n.kind === 'notice' ? 'badge-info' : (n.kind === 'class' ? 'badge-upcoming' : 'badge-exam')) + '">' +
-        (n.kind === 'notice' ? 'নোটিশ' : (n.kind === 'class' ? 'ক্লাস' : 'পরীক্ষা')) + '</span></h3>' +
-        '<p>' + SEMSStudent.esc(n.body || '') + '</p>' +
-        '<div class="list-meta"><span>' + SEMSStudent.icon('calendar') + ' ' + SEMSStudent.fmtDate(n.sortDate) + '</span></div></div>';
+      var inner = '<div class="list-item' + (n.read ? '' : ' notif-unread') + '" data-id="' + SEMSStudent.esc(n.id) + '" data-link="' + SEMSStudent.esc(n.link || '') + '" role="button" tabindex="0">' +
+        '<h3>' + (!n.read ? '<span class="unread-dot"></span>' : '') + SEMSStudent.icon(typeIcon(n.type)) + ' ' + SEMSStudent.esc(n.title) +
+        ' <span class="badge badge-info">' + SEMSStudent.esc(typeLabel(n.type)) + '</span></h3>' +
+        (n.body ? '<p>' + SEMSStudent.esc(n.body) + '</p>' : '') +
+        '<div class="list-meta"><span>' + SEMSStudent.icon('calendar') + ' ' + SEMSStudent.esc(fmtWhen(n)) + '</span>' +
+        (n.read ? '<span>পড়া হয়েছে</span>' : '<span>নতুন</span>') + '</div></div>';
+      return inner;
     }).join('');
+    wrap.querySelectorAll('.list-item[data-id]').forEach(function (el) {
+      function openIt() {
+        var id = el.getAttribute('data-id');
+        var link = el.getAttribute('data-link');
+        el.classList.remove('notif-unread');
+        var dot = el.querySelector('.unread-dot');
+        if (dot) dot.remove();
+        if (window.SEMSNotifications) {
+          SEMSNotifications.markRead(id).catch(function (e) {
+            console.warn('[SEMS] পড়া চিহ্ন দিতে ব্যর্থ:', e && e.message);
+          });
+        }
+        if (link) window.location.href = link;
+      }
+      el.addEventListener('click', openIt);
+      el.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openIt(); }
+      });
+    });
   }
 
   try {
-    var items = [];
-    var notices = await SEMSStudent.getNotices();
-    notices.slice(0, 10).forEach(function (n) {
-      items.push({ kind: 'notice', title: n.title || 'নোটিশ', body: n.body || n.text || '', sortDate: n.createdAt || n.publishDate || n.date });
-    });
-    var profile = await SEMSStudent.getProfile(user);
-    var batchId = profile.courseBatch || profile.batchId || '';
-    var classes = await SEMSStudent.getClasses(batchId);
-    classes.filter(function (c) {
-      var d = SEMSStudent.toDate(c.date);
-      return d && SEMSStudent.dateKey(d) === SEMSStudent.todayKey();
-    }).forEach(function (c) {
-      items.push({ kind: 'class', title: 'আজকের ক্লাস: ' + (c.subject || 'ক্লাস'), body: (c.startTime || '') + (c.endTime ? ' – ' + c.endTime : '') + (c.teacherName ? ' • ' + c.teacherName : ''), sortDate: c.date });
-    });
-    var exams = await SEMSStudent.getExams();
-    exams.filter(function (ex) {
-      var d = SEMSStudent.toDate(ex.date);
-      return d && d >= new Date();
-    }).slice(0, 5).forEach(function (ex) {
-      items.push({ kind: 'exam', title: 'আসন্ন পরীক্ষা: ' + (ex.title || 'পরীক্ষা'), body: (ex.subject || '') + ' • ' + SEMSStudent.fmtDate(ex.date), sortDate: ex.date });
-    });
-    items.sort(function (a, b) {
-      var da = SEMSStudent.toDate(a.sortDate) || new Date(0);
-      var dbb = SEMSStudent.toDate(b.sortDate) || new Date(0);
-      return dbb - da;
-    });
+    var items = window.SEMSNotifications
+      ? await SEMSNotifications.getMyNotifications(user.uid)
+      : [];
     render(items);
 
     var btn = document.getElementById('markAllReadBtn');
     if (btn) {
-      btn.addEventListener('click', function () {
-        try { localStorage.setItem(READ_KEY, new Date().toISOString()); } catch (e) { /* ignore */ }
-        if (window.SEMSToast) SEMSToast.success('সব নোটিফিকেশন পড়া হয়েছে বলে চিহ্নিত করা হয়েছে।');
-        render(items);
+      btn.addEventListener('click', async function () {
+        try {
+          if (window.SEMSNotifications) await SEMSNotifications.markAllRead(user.uid);
+          items.forEach(function (n) { n.read = true; });
+          render(items);
+          if (window.SEMSToast) SEMSToast.success('সব নোটিফিকেশন পড়া হয়েছে বলে চিহ্নিত করা হয়েছে।');
+        } catch (err) {
+          console.warn('[SEMS] সব পড়া চিহ্ন দিতে ব্যর্থ:', err && err.message);
+          if (window.SEMSToast) SEMSToast.error('চিহ্নিত করা যায়নি। আবার চেষ্টা করুন।');
+        }
       });
     }
   } catch (err) {

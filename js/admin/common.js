@@ -16,12 +16,11 @@
  * Firestore কালেকশন:
  * users, admissions, students, batches, courses, classes, lectures,
  * notices, exams, assignments, attendance, results, submissions,
- * settings, teacherApplications
+ * settings, teacherApplications, notifications
  *
- * নিয়মের ঘাটতি (Rules-এ নেই, তাই আসল Firebase-এ লেখা ব্যর্থ হবে):
- * - notifications নামে আলাদা কালেকশন Rules-এ নেই; তাই
- *   notifications.html নোটিশ + সাম্প্রতিক কার্যকলাপ দেখায়,
- *   নতুন কালেকশনে লেখে না।
+ * নোটিফিকেশন (Phase 5): `notifications` কালেকশনে অ্যাডমিন/শিক্ষক
+ * লেখে; প্রত্যেক ইউজার শুধু নিজের (userId == নিজের uid) ডক পড়ে
+ * ও পড়া চিহ্ন দেয়। নিয়ম `firebase/firestore.rules`-এ আছে।
  */
 (function () {
   function isDemo() { return !!(window.SEMS && window.SEMS.isDemo); }

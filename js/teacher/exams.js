@@ -63,6 +63,14 @@ document.addEventListener('DOMContentLoaded', async function () {
           date: dateVal + 'T' + start + ':00', startTime: start,
           durationMinutes: duration, totalMarks: total
         });
+        // নোটিফিকেশন: ব্যাচের শিক্ষার্থীদের জানানো (fire-and-forget)
+        if (window.SEMSNotifications) {
+          SEMSNotifications.sendToBatch(batchId, {
+            title: 'নতুন পরীক্ষা: ' + title,
+            body: subject + ' • ' + dateVal + ' ' + start,
+            type: 'exam', link: 'exams.html'
+          }).catch(function (e) { console.warn('[SEMS] পরীক্ষা নোটিফিকেশন ব্যর্থ:', e && e.message); });
+        }
         if (msg) { msg.textContent = 'পরীক্ষা তৈরি হয়েছে।'; msg.hidden = false; }
         if (window.SEMSToast) SEMSToast.success('পরীক্ষা তৈরি হয়েছে।');
         form.reset();

@@ -48,6 +48,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     SEMSLoader.show();
     try {
       await SEMSAdmin.addLecture(user, data);
+      // নোটিফিকেশন: ব্যাচের শিক্ষার্থীদের জানানো (fire-and-forget)
+      if (window.SEMSNotifications) {
+        SEMSNotifications.sendToBatch(data.batchId, {
+          title: 'নতুন লেকচার: ' + data.title,
+          body: data.subject + (data.chapter ? ' — ' + data.chapter : ''),
+          type: 'lecture', link: 'lectures.html'
+        }).catch(function (e) { console.warn('[SEMS] লেকচার নোটিফিকেশন ব্যর্থ:', e && e.message); });
+      }
       SEMSLoader.hide();
       okBox.textContent = 'লেকচার প্রকাশ হয়েছে — শিক্ষার্থীরা এখন দেখতে পারবে।';
       okBox.hidden = false;

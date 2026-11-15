@@ -54,6 +54,22 @@
 }
 .nav-logout:hover { background: #fee2e2; border-color: var(--danger); color: var(--danger); }
 
+/* নেভবারের ঘণ্টা (নোটিফিকেশন) + অপঠিত সংখ্যার ব্যাজ */
+.nav-bell {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 50%; color: var(--text);
+}
+.nav-bell:hover { background: var(--primary-light); color: var(--primary); text-decoration: none; }
+.nav-badge {
+  position: absolute; top: 2px; right: 0; min-width: 18px; height: 18px;
+  padding: 0 5px; border-radius: 999px; background: var(--danger); color: #fff;
+  font-size: 0.7rem; font-weight: 700; line-height: 18px; text-align: center;
+  border: 2px solid #fff;
+}
+
+/* নোটিফিকেশন তালিকা: অপঠিত আইটেম হালকা নীল পটভূমিতে */
+.list-item.notif-unread { background: var(--primary-light); border-left: 3px solid var(--primary); }
+
 /* Sidebar (Phase 2/3/4-এ পূর্ণাঙ্গ হবে; এখন শুধু বেসিক কাঠামো) */
 .sems-sidebar {
   width: 240px; background: #fff; border-right: 1px solid var(--border);

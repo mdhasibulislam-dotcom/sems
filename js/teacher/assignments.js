@@ -66,6 +66,14 @@ document.addEventListener('DOMContentLoaded', async function () {
           title: title, subject: subject, batchId: batchId,
           dueDate: due + 'T23:59:00', description: desc
         });
+        // নোটিফিকেশন: ব্যাচের শিক্ষার্থীদের জানানো (fire-and-forget)
+        if (window.SEMSNotifications) {
+          SEMSNotifications.sendToBatch(batchId, {
+            title: 'নতুন অ্যাসাইনমেন্ট: ' + title,
+            body: subject + ' • শেষ তারিখ: ' + due,
+            type: 'assignment', link: 'assignments.html'
+          }).catch(function (e) { console.warn('[SEMS] অ্যাসাইনমেন্ট নোটিফিকেশন ব্যর্থ:', e && e.message); });
+        }
         if (msg) { msg.textContent = 'অ্যাসাইনমেন্ট তৈরি হয়েছে।'; msg.hidden = false; }
         if (window.SEMSToast) SEMSToast.success('অ্যাসাইনমেন্ট তৈরি হয়েছে।');
         form.reset();

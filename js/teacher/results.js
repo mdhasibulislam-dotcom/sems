@@ -150,6 +150,18 @@ document.addEventListener('DOMContentLoaded', async function () {
         for (var i = 0; i < entries.length; i++) {
           await SEMSTeacher.saveResult(user, currentExam, entries[i].studentId, entries[i].marks);
         }
+        // নোটিফিকেশন: নম্বর পাওয়া প্রত্যেক শিক্ষার্থীকে জানানো (fire-and-forget)
+        if (window.SEMSNotifications) {
+          entries.forEach(function (en) {
+            SEMSNotifications.createNotification({
+              userId: en.studentId,
+              title: 'রেজাল্ট প্রকাশ হয়েছে: ' + (currentExam.title || 'পরীক্ষা'),
+              body: 'আপনি ' + total + '-এর মধ্যে ' + en.marks + ' পেয়েছেন। গ্রেড: ' +
+                SEMSTeacher.gradeFromMarks(en.marks, total) + '।',
+              type: 'result', link: 'results.html'
+            }).catch(function (e) { console.warn('[SEMS] রেজাল্ট নোটিফিকেশন ব্যর্থ:', e && e.message); });
+          });
+        }
         var msg = document.getElementById('resMsg');
         if (msg) {
           msg.textContent = SEMSTeacher.bnDigits(entries.length) + ' জন শিক্ষার্থীর নম্বর সংরক্ষণ হয়েছে।';

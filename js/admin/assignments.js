@@ -69,6 +69,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     SEMSLoader.show();
     try {
       var rec = await SEMSAdmin.addAssignment(user, data);
+      // নোটিফিকেশন: ব্যাচের শিক্ষার্থীদের জানানো (fire-and-forget)
+      if (window.SEMSNotifications) {
+        SEMSNotifications.sendToBatch(data.batchId, {
+          title: 'নতুন অ্যাসাইনমেন্ট: ' + data.title,
+          body: (data.subject || '') + ' • শেষ তারিখ: ' + (data.dueDate || ''),
+          type: 'assignment', link: 'assignments.html'
+        }).catch(function (e) { console.warn('[SEMS] অ্যাসাইনমেন্ট নোটিফিকেশন ব্যর্থ:', e && e.message); });
+      }
       assignments.unshift(rec);
       render();
       SEMSLoader.hide();
