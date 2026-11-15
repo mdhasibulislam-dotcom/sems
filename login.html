@@ -70,7 +70,7 @@
       if (window.SEMS && SEMS.isDemo) document.getElementById('demoNotice').hidden = false;
       // আগে থেকে লগইন করা থাকলে সরাসরি ড্যাশবোর্ডে
       const existing = await SEMSAuth.getCurrentUser();
-      if (existing) { window.location.replace(SEMSRouter.dashboardPath(existing)); return; }
+      if (existing) { SEMSRouter.goToDashboard(existing); return; }
 
       const form = document.getElementById('loginForm');
       const errBox = document.getElementById('errorBox');
@@ -87,7 +87,7 @@
         try {
           const user = await SEMSAuth.signIn(identifier, password);
           SEMSToast.success('লগইন সফল হয়েছে!');
-          window.location.replace(SEMSRouter.dashboardPath(user));
+          SEMSRouter.goToDashboard(user);
         } catch (err) {
           SEMSLoader.hide();
           showErr(SEMSHelpers.friendlyAuthError(err));
@@ -100,7 +100,7 @@
         try {
           const user = await SEMSAuth.signInWithGoogle();
           SEMSToast.success('Google দিয়ে লগইন সফল!');
-          window.location.replace(SEMSRouter.dashboardPath(user));
+          SEMSRouter.goToDashboard(user);
         } catch (err) {
           SEMSLoader.hide();
           showErr(SEMSHelpers.friendlyAuthError(err));

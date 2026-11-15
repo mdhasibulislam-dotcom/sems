@@ -10,15 +10,20 @@
     student: 'student/dashboard.html'
   };
 
-  // বর্তমান পেজ কোন ডিরেক্টরিতে আছে, সেই অনুযায়ী prefix বের করা
-  // যেমন: /student/dashboard.html -> '../', /login.html -> ''
-  function basePrefix() {
-    var path = window.location.pathname;
-    var parts = path.split('/').filter(Boolean);
-    // শেষ অংশটি ফাইল হলে বাদ দাও
-    if (parts.length && parts[parts.length - 1].indexOf('.') !== -1) parts.pop();
-    return parts.map(function () { return '../'; }).join('');
-  }
+  // সাইটের রুট (যেমন GitHub Pages-এ /sems/) — router.js স্ক্রিপ্টের
+  // নিজের URL থেকে বের করা হয়, তাই পেজ যত গভীরেই থাকুক ঠিক থাকে।
+  // আগের basePrefix() বাগ: পেজের গভীরতা গুনে '../' বসাতো, ফলে
+  // /sems/student/dashboard.html থেকে গেলে /login.html (সাইটের
+  // বাইরে) হয়ে 404 আসতো।
+  var SITE_ROOT = '/';
+  try {
+    var src = (document.currentScript && document.currentScript.src) || '';
+    if (src) {
+      var u = new URL(src, window.location.href);
+      SITE_ROOT = u.pathname.replace(/js\/core\/router\.js$/, '');
+      if (SITE_ROOT.charAt(SITE_ROOT.length - 1) !== '/') SITE_ROOT += '/';
+    }
+  } catch (e) { SITE_ROOT = '/'; }
 
   var SEMSRouter = {
     dashboards: DASHBOARDS,
@@ -30,17 +35,17 @@
       return DASHBOARDS[user.role] || DASHBOARDS.student;
     },
 
-    // dashboardPath-কে বর্তমান পেজ থেকে সঠিক relative পাথে রূপান্তর
+    // dashboardPath-কে সাইট রুট থেকে সঠিক পাথে রূপান্তর
     goToDashboard: function (user) {
-      window.location.replace(basePrefix() + this.dashboardPath(user));
+      window.location.replace(SITE_ROOT + this.dashboardPath(user));
     },
 
     goToLogin: function () {
-      window.location.replace(basePrefix() + 'login.html');
+      window.location.replace(SITE_ROOT + 'login.html');
     },
 
     goToAdmission: function () {
-      window.location.replace(basePrefix() + 'admission.html');
+      window.location.replace(SITE_ROOT + 'admission.html');
     }
   };
 

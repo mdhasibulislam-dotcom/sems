@@ -47,10 +47,25 @@
     isDemo: function () { return !!(window.SEMS && SEMS.isDemo); },
 
     // বর্তমান লগইন করা ইউজার (Firebase বা ডেমো)
+    // Firebase Auth সেশন ফিরে আসতে একটু সময় লাগে — currentUser
+    // শুরুতেই null থাকতে পারে। তাই null হলে onAuthStateChanged-এর
+    // প্রথম উত্তর (সর্বোচ্চ ~4 সেকেন্ড) পর্যন্ত অপেক্ষা করা হয়,
+    // নাহলে লগইন করা ইউজারকেও ভুল করে লগইন পেজে পাঠিয়ে দিতো।
     getCurrentUser: async function () {
       if (SEMS.isDemo) return getDemoUser();
       if (!SEMS.firebaseReady) return null;
       var fbUser = firebase.auth().currentUser;
+      if (!fbUser) {
+        try {
+          fbUser = await new Promise(function (resolve) {
+            var done = false;
+            var timer = setTimeout(function () { if (!done) { done = true; resolve(null); } }, 4000);
+            var unsub = firebase.auth().onAuthStateChanged(function (u) {
+              if (!done) { done = true; clearTimeout(timer); if (unsub) unsub(); resolve(u); }
+            });
+          });
+        } catch (e) { fbUser = null; }
+      }
       if (!fbUser) return null;
       var profile = await fetchProfile(fbUser.uid).catch(function () { return null; });
       return {
