@@ -20,7 +20,7 @@
       <h1>নতুন অ্যাকাউন্ট তৈরি করুন</h1>
 
       <div class="notice notice-warn" id="demoNotice" hidden>
-        ⚠️ <strong>Firebase config বসানো হয়নি</strong> — ডেমো মোডে চলছে। রেজিস্ট্রেশন শুধু এই ব্রাউজারে (localStorage) সংরক্ষিত হবে।
+        <span class="ic" data-icon="alertTriangle"></span> <strong>Firebase config বসানো হয়নি</strong> — ডেমো মোডে চলছে। রেজিস্ট্রেশন শুধু এই ব্রাউজারে (localStorage) সংরক্ষিত হবে।
       </div>
       <div class="notice notice-err" id="errorBox" hidden></div>
 
@@ -43,8 +43,8 @@
         </label>
         <fieldset class="field role-field">
           <legend>আপনি কে? *</legend>
-          <label class="radio-pill"><input type="radio" name="role" value="student" checked> 🎓 শিক্ষার্থী (Student)</label>
-          <label class="radio-pill"><input type="radio" name="role" value="teacher"> 👨‍🏫 শিক্ষক (Teacher)</label>
+          <label class="radio-pill"><input type="radio" name="role" value="student" checked> <span class="ic" data-icon="graduationCap"></span> শিক্ষার্থী (Student)</label>
+          <label class="radio-pill"><input type="radio" name="role" value="teacher"> <span class="ic" data-icon="users"></span> শিক্ষক (Teacher)</label>
         </fieldset>
         <p class="hint">অ্যাডমিন নিজে রেজিস্টার করতে পারবেন না — অ্যাডমিন অ্যাকাউন্ট শুধু অ্যাডমিন তৈরি করেন।</p>
         <label class="field">
@@ -64,7 +64,7 @@
       </button>
 
       <p class="auth-switch">ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="login.html">লগইন করুন</a></p>
-      <p class="auth-back"><a href="index.html">← হোমে ফিরুন</a></p>
+      <p class="auth-back"><a href="index.html"><span class="ic" data-icon="arrowLeft"></span> হোমে ফিরুন</a></p>
     </div>
   </main>
 
@@ -79,6 +79,7 @@
   <script src="js/core/helpers.js"></script>
   <script src="js/core/router.js"></script>
   <script src="js/core/app.js"></script>
+  <script src="js/components/icons.js"></script>
   <script src="js/components/loader.js"></script>
   <script src="js/components/toast.js"></script>
   <script>

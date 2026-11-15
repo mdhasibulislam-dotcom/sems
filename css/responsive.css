@@ -17,9 +17,17 @@
 }
 
 @media (max-width: 420px) {
-  html { font-size: 15px; }
+  /* ইনপুট 16px রাখা — এর কম হলে iPhone-এ ফোকাসে পেজ জুম হয়ে যায় */
+  .field input, .field select, .field textarea { font-size: 16px; }
   .hero-actions .btn { width: 100%; }
   .auth-row { flex-direction: column; align-items: flex-start; gap: 8px; }
   #toastRoot { left: 16px; }
   .toast { max-width: none; }
+  /* ট্যাপ টার্গেট: আঙুলে চাপার মতো বড় বাটন */
+  .btn { min-height: 44px; }
+  .btn-sm { min-height: 40px; }
+  .nav-user { gap: 8px; }
+  .nav-logout { padding: 8px 12px; }
+  .radio-pill { flex: 1 1 100%; }
+  .landing-nav .btn { padding: 10px 14px; }
 }

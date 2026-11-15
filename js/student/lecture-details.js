@@ -11,21 +11,21 @@ document.addEventListener('DOMContentLoaded', async function () {
   var id = params.get('id');
   if (!wrap) return;
   if (!id) {
-    wrap.innerHTML = SEMSStudent.emptyState('📚', 'কোনো লেকচার নির্বাচন করা হয়নি', 'লেকচার তালিকা থেকে একটি লেকচার খুলুন।');
+    wrap.innerHTML = SEMSStudent.emptyState('book', 'কোনো লেকচার নির্বাচন করা হয়নি', 'লেকচার তালিকা থেকে একটি লেকচার খুলুন।');
     return;
   }
   try {
     var l = await SEMSStudent.getLectureById(id);
     if (!l) {
-      wrap.innerHTML = SEMSStudent.emptyState('📚', 'লেকচারটি পাওয়া যায়নি', 'এটি মুছে ফেলা হতে পারে বা এখনো প্রকাশিত হয়নি।');
+      wrap.innerHTML = SEMSStudent.emptyState('book', 'লেকচারটি পাওয়া যায়নি', 'এটি মুছে ফেলা হতে পারে বা এখনো প্রকাশিত হয়নি।');
       return;
     }
     var title = document.getElementById('lectureTitle');
     if (title) title.textContent = l.title || 'লেকচার';
     var materials = '';
-    if (l.pdfUrl) materials += '<a class="btn btn-primary" href="' + SEMSStudent.esc(l.pdfUrl) + '" target="_blank" rel="noopener" download>📄 PDF নোট ডাউনলোড</a>';
-    if (l.slidesUrl) materials += '<a class="btn btn-outline" href="' + SEMSStudent.esc(l.slidesUrl) + '" target="_blank" rel="noopener" download>🖼️ স্লাইড ডাউনলোড</a>';
-    if (l.recordingUrl) materials += '<a class="btn btn-outline" href="' + SEMSStudent.esc(l.recordingUrl) + '" target="_blank" rel="noopener">🎥 ক্লাস রেকর্ডিং দেখুন</a>';
+    if (l.pdfUrl) materials += '<a class="btn btn-primary" href="' + SEMSStudent.esc(l.pdfUrl) + '" target="_blank" rel="noopener" download>' + SEMSStudent.icon('fileText') + ' PDF নোট ডাউনলোড</a>';
+    if (l.slidesUrl) materials += '<a class="btn btn-outline" href="' + SEMSStudent.esc(l.slidesUrl) + '" target="_blank" rel="noopener" download>' + SEMSStudent.icon('image') + ' স্লাইড ডাউনলোড</a>';
+    if (l.recordingUrl) materials += '<a class="btn btn-outline" href="' + SEMSStudent.esc(l.recordingUrl) + '" target="_blank" rel="noopener">' + SEMSStudent.icon('video') + ' ক্লাস রেকর্ডিং দেখুন</a>';
     wrap.innerHTML =
       '<dl class="kv">' +
       '<dt>বিষয়</dt><dd>' + SEMSStudent.esc(l.subject || '—') + '</dd>' +

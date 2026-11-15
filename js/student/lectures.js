@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     var wrap = document.getElementById('lecturesWrap');
     if (!wrap) return;
     if (!list.length) {
-      wrap.innerHTML = SEMSStudent.emptyState('📚', 'কোনো লেকচার পাওয়া যায়নি',
+      wrap.innerHTML = SEMSStudent.emptyState('book', 'কোনো লেকচার পাওয়া যায়নি',
         'এই ফিল্টারে কিছু নেই, অথবা এখনো কোনো লেকচার প্রকাশিত হয়নি।');
       return;
     }
@@ -28,17 +28,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     var html = '';
     keys.forEach(function (key) {
       var first = byDate[key][0];
-      html += '<h3 class="section-title">📅 ' + SEMSStudent.fmtDate(first.publishDate || first.date) + '</h3>';
+      html += '<h3 class="section-title">' + SEMSStudent.icon('calendar') + ' ' + SEMSStudent.fmtDate(first.publishDate || first.date) + '</h3>';
       byDate[key].forEach(function (l) {
         html += '<div class="list-item"><h3>' + SEMSStudent.esc(l.title || 'লেকচার') + '</h3>' +
-          '<div class="list-meta"><span>📚 ' + SEMSStudent.esc(l.subject || '') + '</span>' +
+          '<div class="list-meta"><span>' + SEMSStudent.icon('book') + ' ' + SEMSStudent.esc(l.subject || '') + '</span>' +
           (l.chapter ? '<span>' + SEMSStudent.esc(l.chapter) + '</span>' : '') +
-          (l.teacherName ? '<span>👨‍🏫 ' + SEMSStudent.esc(l.teacherName) + '</span>' : '') + '</div>' +
+          (l.teacherName ? '<span>' + SEMSStudent.icon('users') + ' ' + SEMSStudent.esc(l.teacherName) + '</span>' : '') + '</div>' +
           (l.description ? '<p>' + SEMSStudent.esc(l.description) + '</p>' : '') +
           '<div class="list-actions">' +
-          (l.pdfUrl ? '<a class="btn btn-outline btn-sm" href="' + SEMSStudent.esc(l.pdfUrl) + '" target="_blank" rel="noopener">📄 PDF নোট</a>' : '') +
-          (l.slidesUrl ? '<a class="btn btn-outline btn-sm" href="' + SEMSStudent.esc(l.slidesUrl) + '" target="_blank" rel="noopener">🖼️ স্লাইড</a>' : '') +
-          (l.recordingUrl ? '<a class="btn btn-outline btn-sm" href="' + SEMSStudent.esc(l.recordingUrl) + '" target="_blank" rel="noopener">🎥 রেকর্ডিং</a>' : '') +
+          (l.pdfUrl ? '<a class="btn btn-outline btn-sm" href="' + SEMSStudent.esc(l.pdfUrl) + '" target="_blank" rel="noopener">' + SEMSStudent.icon('fileText') + ' PDF নোট</a>' : '') +
+          (l.slidesUrl ? '<a class="btn btn-outline btn-sm" href="' + SEMSStudent.esc(l.slidesUrl) + '" target="_blank" rel="noopener">' + SEMSStudent.icon('image') + ' স্লাইড</a>' : '') +
+          (l.recordingUrl ? '<a class="btn btn-outline btn-sm" href="' + SEMSStudent.esc(l.recordingUrl) + '" target="_blank" rel="noopener">' + SEMSStudent.icon('video') + ' রেকর্ডিং</a>' : '') +
           '<a class="btn btn-primary btn-sm" href="lecture-details.html?id=' + encodeURIComponent(l.id) + '">বিস্তারিত</a>' +
           '</div></div>';
       });

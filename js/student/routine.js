@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     var wrap = document.getElementById('routineWrap');
     if (!wrap) return;
     if (!classes.length) {
-      wrap.innerHTML = SEMSStudent.emptyState('🗓️', 'এখনো কোনো ক্লাস রুটিন দেওয়া হয়নি',
+      wrap.innerHTML = SEMSStudent.emptyState('calendar', 'এখনো কোনো ক্লাস রুটিন দেওয়া হয়নি',
         'অ্যাডমিন রুটিন যোগ করলে এখানে সপ্তাহের ক্লাসের সময়সূচি দেখা যাবে।');
       return;
     }
@@ -43,10 +43,10 @@ document.addEventListener('DOMContentLoaded', async function () {
           var st = SEMSStudent.classStatus(c);
           html += '<div class="list-item"><h3>' + SEMSStudent.esc(c.subject || 'ক্লাস') +
             ' <span class="badge ' + SEMSStudent.STATUS_CLASS[st] + '">' + SEMSStudent.STATUS_BN[st] + '</span></h3>' +
-            '<div class="list-meta"><span>📅 ' + SEMSStudent.fmtDate(c.date) + '</span>' +
-            (c.startTime ? '<span>🕐 ' + SEMSStudent.esc(c.startTime) + (c.endTime ? ' – ' + SEMSStudent.esc(c.endTime) : '') + '</span>' : '') +
-            (c.teacherName ? '<span>👨‍🏫 ' + SEMSStudent.esc(c.teacherName) + '</span>' : '') +
-            (c.mode ? '<span>' + (c.mode === 'online' ? '💻 অনলাইন' : '🏫 অফলাইন') + '</span>' : '') + '</div>' +
+            '<div class="list-meta"><span>' + SEMSStudent.icon('calendar') + ' ' + SEMSStudent.fmtDate(c.date) + '</span>' +
+            (c.startTime ? '<span>' + SEMSStudent.icon('clock') + ' ' + SEMSStudent.esc(c.startTime) + (c.endTime ? ' – ' + SEMSStudent.esc(c.endTime) : '') + '</span>' : '') +
+            (c.teacherName ? '<span>' + SEMSStudent.icon('users') + ' ' + SEMSStudent.esc(c.teacherName) + '</span>' : '') +
+            (c.mode ? '<span>' + (c.mode === 'online' ? SEMSStudent.icon('monitor') + ' অনলাইন' : SEMSStudent.icon('mapPin') + ' অফলাইন') + '</span>' : '') + '</div>' +
             (c.classLink ? '<div class="list-actions"><a class="btn btn-primary btn-sm" href="' + SEMSStudent.esc(c.classLink) + '" target="_blank" rel="noopener">ক্লাসে যোগ দিন</a></div>' : '') +
             '</div>';
         });

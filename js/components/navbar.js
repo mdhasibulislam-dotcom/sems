@@ -17,7 +17,7 @@
           '<div class="nav-user">' +
             (name ? '<span class="user-name">' + SEMSHelpers.escapeHtml(name) + '</span>' : '') +
             (role ? '<span class="role-badge">' + SEMSHelpers.escapeHtml(role) + '</span>' : '') +
-            '<button class="nav-logout" type="button" id="navLogoutBtn">লগআউট</button>' +
+            '<button class="nav-logout" type="button" id="navLogoutBtn">' + (window.SEMSIcons ? SEMSIcons.icon('logout', 'ic-sm') + ' ' : '') + 'লগআউট</button>' +
           '</div>' +
         '</div>';
       var btn = document.getElementById('navLogoutBtn');

@@ -20,7 +20,7 @@
       <h1>লগইন করুন</h1>
 
       <div class="notice notice-warn" id="demoNotice" hidden>
-        ⚠️ <strong>Firebase config বসানো হয়নি</strong> — ডেমো মোডে চলছে। যেকোনো ইমেইল ও ৬+ অক্ষরের পাসওয়ার্ড দিয়ে ডেমো শিক্ষার্থী হিসেবে লগইন করা যাবে। আসল ব্যবহারের জন্য Firebase কনফিগ বসান।
+        <span class="ic" data-icon="alertTriangle"></span> <strong>Firebase config বসানো হয়নি</strong> — ডেমো মোডে চলছে। যেকোনো ইমেইল ও ৬+ অক্ষরের পাসওয়ার্ড দিয়ে ডেমো শিক্ষার্থী হিসেবে লগইন করা যাবে। আসল ব্যবহারের জন্য Firebase কনফিগ বসান।
       </div>
       <div class="notice notice-err" id="errorBox" hidden></div>
 
@@ -46,7 +46,7 @@
       </button>
 
       <p class="auth-switch">নতুন শিক্ষার্থী? <a href="register.html">রেজিস্ট্রেশন করুন</a></p>
-      <p class="auth-back"><a href="index.html">← হোমে ফিরুন</a></p>
+      <p class="auth-back"><a href="index.html"><span class="ic" data-icon="arrowLeft"></span> হোমে ফিরুন</a></p>
     </div>
   </main>
 
@@ -61,6 +61,7 @@
   <script src="js/core/helpers.js?v=3"></script>
   <script src="js/core/router.js?v=3"></script>
   <script src="js/core/app.js?v=3"></script>
+  <script src="js/components/icons.js?v=3"></script>
   <script src="js/components/loader.js?v=3"></script>
   <script src="js/components/toast.js?v=3"></script>
   <script>

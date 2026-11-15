@@ -5,15 +5,15 @@
 (function () {
   var MENUS = {
     student: [
-      { label: '🏠 ড্যাশবোর্ড', href: 'dashboard.html', active: true }
+      { icon: 'home', label: 'ড্যাশবোর্ড', href: 'dashboard.html', active: true }
       // Phase 2: রুটিন, লেকচার, নোটিশ, উপস্থিতি, রেজাল্ট, প্রোফাইল
     ],
     teacher: [
-      { label: '🏠 ড্যাশবোর্ড', href: 'dashboard.html', active: true }
+      { icon: 'home', label: 'ড্যাশবোর্ড', href: 'dashboard.html', active: true }
       // Phase 3: ব্যাচ, ক্লাস, লেকচার, উপস্থিতি, নম্বর, অ্যাসাইনমেন্ট
     ],
     admin: [
-      { label: '🏠 ড্যাশবোর্ড', href: 'dashboard.html', active: true }
+      { icon: 'home', label: 'ড্যাশবোর্ড', href: 'dashboard.html', active: true }
       // Phase 4: রুটিন, ব্যাচ, লেকচার, নোটিশ, পরীক্ষা, শিক্ষার্থী, শিক্ষক, সেটিংস
     ]
   };
@@ -25,8 +25,9 @@
       var items = MENUS[user.role] || MENUS.student;
       root.className = 'sems-sidebar';
       root.innerHTML = items.map(function (it) {
+        var ic = (window.SEMSIcons && it.icon) ? SEMSIcons.icon(it.icon) + ' ' : '';
         return '<a href="' + it.href + '"' + (it.active ? ' class="active"' : '') + '>' +
-          SEMSHelpers.escapeHtml(it.label) + '</a>';
+          ic + SEMSHelpers.escapeHtml(it.label) + '</a>';
       }).join('');
     }
   };

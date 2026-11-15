@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     var wrap = document.getElementById('attendanceWrap');
     if (!wrap) return;
     if (!total) {
-      wrap.innerHTML = SEMSStudent.emptyState('✅', 'উপস্থিতির কোনো রেকর্ড নেই',
+      wrap.innerHTML = SEMSStudent.emptyState('checkCircle', 'উপস্থিতির কোনো রেকর্ড নেই',
         'শিক্ষক উপস্থিতি নিলে এখানে আপনার উপস্থিতির ইতিহাস দেখা যাবে।');
       return;
     }

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     var wrap = document.getElementById('notificationsWrap');
     if (!wrap) return;
     if (!items.length) {
-      wrap.innerHTML = SEMSStudent.emptyState('🔔', 'কোনো নোটিফিকেশন নেই',
+      wrap.innerHTML = SEMSStudent.emptyState('bell', 'কোনো নোটিফিকেশন নেই',
         'নতুন নোটিশ, ক্লাস বা পরীক্ষার রিমাইন্ডার এলে এখানে দেখা যাবে।');
       return;
     }
@@ -20,11 +20,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     try { readAt = localStorage.getItem(READ_KEY); } catch (e) { readAt = null; }
     wrap.innerHTML = items.map(function (n) {
       var isNew = !readAt || (n.sortDate && new Date(n.sortDate).toISOString() > readAt);
-      return '<div class="list-item"><h3>' + (isNew ? '🔵 ' : '') + SEMSStudent.esc(n.title) +
+      return '<div class="list-item"><h3>' + (isNew ? '<span class="unread-dot"></span>' : '') + SEMSStudent.esc(n.title) +
         ' <span class="badge ' + (n.kind === 'notice' ? 'badge-info' : (n.kind === 'class' ? 'badge-upcoming' : 'badge-exam')) + '">' +
         (n.kind === 'notice' ? 'নোটিশ' : (n.kind === 'class' ? 'ক্লাস' : 'পরীক্ষা')) + '</span></h3>' +
         '<p>' + SEMSStudent.esc(n.body || '') + '</p>' +
-        '<div class="list-meta"><span>📅 ' + SEMSStudent.fmtDate(n.sortDate) + '</span></div></div>';
+        '<div class="list-meta"><span>' + SEMSStudent.icon('calendar') + ' ' + SEMSStudent.fmtDate(n.sortDate) + '</span></div></div>';
     }).join('');
   }
 

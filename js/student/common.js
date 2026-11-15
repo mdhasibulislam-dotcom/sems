@@ -67,9 +67,14 @@
   var STATUS_BN = { Upcoming: 'আসন্ন', Ongoing: 'চলমান', Completed: 'সম্পন্ন' };
   var STATUS_CLASS = { Upcoming: 'badge-upcoming', Ongoing: 'badge-ongoing', Completed: 'badge-completed' };
 
+  // খালি অবস্থা: icon = SEMSIcons-এর নাম (যেমন 'calendar'), ইমোজি নয়।
   function emptyState(icon, title, hint) {
-    return '<div class="empty-state"><div class="big">' + icon + '</div><strong>' + esc(title) + '</strong>' +
+    var ic = (window.SEMSIcons && icon) ? SEMSIcons.icon(icon, 'ic-lg') : '';
+    return '<div class="empty-state"><div class="big">' + ic + '</div><strong>' + esc(title) + '</strong>' +
       (hint ? '<p>' + esc(hint) + '</p>' : '') + '</div>';
+  }
+  function ic(name) {
+    return window.SEMSIcons ? SEMSIcons.icon(name, 'ic-sm') : '';
   }
 
   /* ---------- ডেমো (নমুনা) ডেটা: শুধু SEMS.isDemo হলে ---------- */
@@ -175,6 +180,7 @@
   var SEMSStudent = {
     isDemo: isDemo,
     isReady: isReady,
+    icon: ic,
     esc: esc,
     bnDigits: bnDigits,
     toDate: toDate,

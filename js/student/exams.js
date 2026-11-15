@@ -12,15 +12,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     var isToday = d && SEMSStudent.dateKey(d) === SEMSStudent.todayKey();
     return '<div class="list-item"><h3>' + SEMSStudent.esc(ex.title || 'পরীক্ষা') +
       ' <span class="badge ' + (isPast ? 'badge-completed' : 'badge-exam') + '">' + (isPast ? 'শেষ হয়েছে' : (isToday ? 'আজ' : 'আসন্ন')) + '</span></h3>' +
-      '<div class="list-meta"><span>📚 ' + SEMSStudent.esc(ex.subject || '') + '</span>' +
-      '<span>📅 ' + SEMSStudent.fmtDate(ex.date) + '</span>' +
-      (ex.startTime ? '<span>🕐 ' + SEMSStudent.esc(ex.startTime) + '</span>' : '') +
-      (ex.durationMinutes ? '<span>⏱️ ' + SEMSStudent.bnDigits(ex.durationMinutes) + ' মিনিট</span>' : '') +
-      (ex.totalMarks ? '<span>📝 মোট ' + SEMSStudent.bnDigits(ex.totalMarks) + ' নম্বর</span>' : '') + '</div>' +
+      '<div class="list-meta"><span>' + SEMSStudent.icon('book') + ' ' + SEMSStudent.esc(ex.subject || '') + '</span>' +
+      '<span>' + SEMSStudent.icon('calendar') + ' ' + SEMSStudent.fmtDate(ex.date) + '</span>' +
+      (ex.startTime ? '<span>' + SEMSStudent.icon('clock') + ' ' + SEMSStudent.esc(ex.startTime) + '</span>' : '') +
+      (ex.durationMinutes ? '<span>' + SEMSStudent.icon('timer') + ' ' + SEMSStudent.bnDigits(ex.durationMinutes) + ' মিনিট</span>' : '') +
+      (ex.totalMarks ? '<span>' + SEMSStudent.icon('edit') + ' মোট ' + SEMSStudent.bnDigits(ex.totalMarks) + ' নম্বর</span>' : '') + '</div>' +
       (ex.description ? '<p>' + SEMSStudent.esc(ex.description) + '</p>' : '') +
       '<div class="list-actions">' +
       (!isPast
-        ? '<button type="button" class="btn btn-primary btn-sm start-exam-btn">▶️ পরীক্ষা শুরু</button>'
+        ? '<button type="button" class="btn btn-primary btn-sm start-exam-btn">' + SEMSStudent.icon('play') + ' পরীক্ষা শুরু</button>'
         : '<a class="btn btn-outline btn-sm" href="results.html">ফলাফল দেখুন</a>') +
       '</div></div>';
   }
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     var wrap = document.getElementById('examsWrap');
     if (!wrap) return;
     if (!exams.length) {
-      wrap.innerHTML = SEMSStudent.emptyState('📋', 'কোনো পরীক্ষা নির্ধারিত হয়নি',
+      wrap.innerHTML = SEMSStudent.emptyState('clipboard', 'কোনো পরীক্ষা নির্ধারিত হয়নি',
         'অ্যাডমিন পরীক্ষা যোগ করলে এখানে আসন্ন ও গত পরীক্ষার তালিকা দেখা যাবে।');
       return;
     }

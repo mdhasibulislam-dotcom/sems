@@ -25,6 +25,16 @@
 .modal-box h3 { margin-bottom: 10px; }
 .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
 
+/* আসল আইকন (inline SVG, কোনো ইমোজি নয়) — আকার প্যারেন্টের
+   ফন্ট-সাইজ অনুযায়ী বদলায়, রঙ currentColor থেকে নেয় */
+.ic { display: inline-flex; align-items: center; justify-content: center; vertical-align: -0.18em; }
+.ic svg { width: 1.15em; height: 1.15em; display: block; }
+.ic-sm svg { width: 1em; height: 1em; }
+.ic-lg svg { width: 44px; height: 44px; }
+.empty-state .big .ic { color: var(--primary); }
+/* নতুন নোটিফিকেশনের নীল ডট (আগে এখানে নীল বৃত্তের ইমোজি ছিল) */
+.unread-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--primary); margin-right: 6px; vertical-align: middle; }
+
 /* Navbar */
 .sems-navbar {
   background: #fff; border-bottom: 1px solid var(--border);
@@ -38,8 +48,9 @@
   padding: 3px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 700;
 }
 .nav-logout {
+  display: inline-flex; align-items: center; gap: 6px;
   background: none; border: 1px solid var(--border); border-radius: 8px;
-  padding: 6px 12px; cursor: pointer; font-family: var(--font); font-size: 0.9rem;
+  padding: 6px 12px; min-height: 40px; cursor: pointer; font-family: var(--font); font-size: 0.9rem;
 }
 .nav-logout:hover { background: #fee2e2; border-color: var(--danger); color: var(--danger); }
 
@@ -49,8 +60,10 @@
   padding: 16px 12px; min-height: calc(100vh - 57px);
 }
 .sems-sidebar a {
-  display: block; padding: 10px 12px; border-radius: 8px; color: var(--text); font-weight: 600;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 8px; color: var(--text); font-weight: 600;
 }
+.sems-sidebar a .ic { color: var(--primary); flex-shrink: 0; }
 .sems-sidebar a:hover, .sems-sidebar a.active { background: var(--primary-light); color: var(--primary); text-decoration: none; }
 .layout-with-sidebar { display: flex; }
-.layout-with-sidebar main { flex: 1; }
+.layout-with-sidebar main { flex: 1; min-width: 0; }

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     var wrap = document.getElementById('resultsWrap');
     if (!results.length) {
       if (sumEl) sumEl.innerHTML = '';
-      if (wrap) wrap.innerHTML = SEMSStudent.emptyState('🏆', 'এখনো কোনো রেজাল্ট প্রকাশিত হয়নি',
+      if (wrap) wrap.innerHTML = SEMSStudent.emptyState('trophy', 'এখনো কোনো রেজাল্ট প্রকাশিত হয়নি',
         'পরীক্ষার ফলাফল প্রকাশ হলে এখানে নম্বর ও গ্রেড দেখা যাবে।');
       return;
     }

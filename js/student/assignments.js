@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     var wrap = document.getElementById('assignmentsWrap');
     if (!wrap) return;
     if (!list.length) {
-      wrap.innerHTML = SEMSStudent.emptyState('📝', 'কোনো অ্যাসাইনমেন্ট নেই',
+      wrap.innerHTML = SEMSStudent.emptyState('edit', 'কোনো অ্যাসাইনমেন্ট নেই',
         'শিক্ষক অ্যাসাইনমেন্ট দিলে এখানে দেখা যাবে।');
       return;
     }
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       var sub = subs[a.id];
       return '<div class="list-item"><h3>' + SEMSStudent.esc(a.title || 'অ্যাসাইনমেন্ট') +
         ' <span class="badge ' + st.cls + '">' + st.label + '</span></h3>' +
-        '<div class="list-meta"><span>📚 ' + SEMSStudent.esc(a.subject || '') + '</span>' +
+        '<div class="list-meta"><span>' + SEMSStudent.icon('book') + ' ' + SEMSStudent.esc(a.subject || '') + '</span>' +
         '<span>⏰ শেষ তারিখ: ' + SEMSStudent.fmtDate(a.dueDate) + '</span></div>' +
         (a.description ? '<p>' + SEMSStudent.esc(a.description) + '</p>' : '') +
         (sub ? '<p class="hint">জমা দেওয়া হয়েছে: ' + SEMSStudent.fmtDate(sub.submittedAt) + (sub.savedOnline === false ? ' (শুধু এই ব্রাউজারে সংরক্ষিত)' : '') + '</p>' : '') +

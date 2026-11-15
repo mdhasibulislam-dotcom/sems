@@ -124,6 +124,35 @@ table.data th { color: var(--muted); font-size: 0.85rem; }
   .grid-2-col { grid-template-columns: 1fr; }
   .quick-grid { grid-template-columns: repeat(2, 1fr); }
   .kv { grid-template-columns: 120px 1fr; }
-  .student-sidebar { display: flex; gap: 4px; overflow-x: auto; padding: 10px; }
-  .student-sidebar a { white-space: nowrap; flex-shrink: 0; }
+  /* সাইডবার: ফোনে নেভবারের নিচে আটকে থাকা (sticky) স্ক্রলযোগ্য
+     পিল-বার — ১০টা লিংক এক লাইনে স্ক্রল করা যায়, পেজের পাশে
+     ছিটকে যায় না, ট্যাপ টার্গেট ৪০px */
+  .student-sidebar {
+    position: sticky; top: 57px; z-index: 5;
+    display: flex; gap: 6px; overflow-x: auto; padding: 10px 12px;
+    background: #fff; border-bottom: 1px solid var(--border);
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .student-sidebar::-webkit-scrollbar { display: none; }
+  .student-sidebar a {
+    white-space: nowrap; flex-shrink: 0; min-height: 40px;
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px;
+  }
+  .student-sidebar a.active { border-color: var(--primary); }
+}
+
+/* ৩৬০px ফোন: কার্ড/প্রোফাইল/ফিল্টার যাতে না ফেটে যায় */
+@media (max-width: 480px) {
+  .student-main { padding: 16px 12px 48px; }
+  .panel { padding: 16px; }
+  .page-head h1 { font-size: 1.35rem; }
+  .kv { grid-template-columns: 1fr; gap: 2px 0; }
+  .kv dd { margin-bottom: 8px; }
+  .profile-top { gap: 12px; }
+  .filter-row select, .filter-row input { min-width: 0; flex: 1 1 100%; }
+  .stat-grid { gap: 10px; }
+  .stat-card { padding: 12px 8px; }
+  .stat-card .num { font-size: 1.4rem; }
+  .quick-grid { gap: 10px; }
+  .list-actions .btn { min-height: 40px; }
 }

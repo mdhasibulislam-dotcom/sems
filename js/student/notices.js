@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     var wrap = document.getElementById('noticesWrap');
     if (!wrap) return;
     if (!list.length) {
-      wrap.innerHTML = SEMSStudent.emptyState('📢', 'কোনো নোটিশ পাওয়া যায়নি',
+      wrap.innerHTML = SEMSStudent.emptyState('megaphone', 'কোনো নোটিশ পাওয়া যায়নি',
         'এই বিভাগে কিছু নেই, অথবা এখনো কোনো নোটিশ দেওয়া হয়নি।');
       return;
     }
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       return '<div class="list-item"><h3>' + SEMSStudent.esc(n.title || 'নোটিশ') +
         (n.urgent ? ' <span class="badge badge-urgent">জরুরি</span>' : '') + '</h3>' +
         '<p>' + SEMSStudent.esc(n.body || n.text || '') + '</p>' +
-        '<div class="list-meta"><span>📅 ' + SEMSStudent.fmtDate(n.createdAt || n.publishDate || n.date) + '</span>' +
+        '<div class="list-meta"><span>' + SEMSStudent.icon('calendar') + ' ' + SEMSStudent.fmtDate(n.createdAt || n.publishDate || n.date) + '</span>' +
         (n.category ? '<span class="badge badge-info">' + SEMSStudent.esc(CAT_BN[n.category] || n.category) + '</span>' : '') + '</div></div>';
     }).join('');
   }
