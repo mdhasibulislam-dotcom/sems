@@ -4,61 +4,100 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>শিক্ষক ড্যাশবোর্ড — SEMS</title>
-  <link rel="stylesheet" href="../css/global.css">
-  <link rel="stylesheet" href="../css/dashboard.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/global.css?v=3">
+  <link rel="stylesheet" href="../css/dashboard.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/teacher.css?v=3">
+  <link rel="stylesheet" href="../css/responsive.css?v=3">
 </head>
 <body>
   <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
   <div id="toastRoot"></div>
   <div id="navbarRoot"></div>
 
-  <main class="container dashboard-wrap">
-    <div class="dashboard-card">
-      <h1><span class="ic" data-icon="users"></span> শিক্ষক ড্যাশবোর্ড</h1>
-      <p class="welcome" id="welcomeText">স্বাগতম!</p>
-      <div class="notice notice-info">
-        <strong>Phase 3-এ আসছে:</strong> নিজের ব্যাচ/ক্লাস পরিচালনা, লেকচার আপলোড, উপস্থিতি, নম্বর ও অ্যাসাইনমেন্ট।
+  <div class="layout-with-sidebar">
+    <nav class="sems-sidebar teacher-sidebar" id="sidebarRoot">
+      <a href="dashboard.html" data-page="dashboard"><span class="ic" data-icon="home"></span> ড্যাশবোর্ড</a>
+      <a href="my-classes.html" data-page="my-classes"><span class="ic" data-icon="calendar"></span> আমার ক্লাস</a>
+      <a href="routine.html" data-page="routine"><span class="ic" data-icon="clock"></span> রুটিন</a>
+      <a href="students.html" data-page="students"><span class="ic" data-icon="users"></span> শিক্ষার্থী</a>
+      <a href="attendance.html" data-page="attendance"><span class="ic" data-icon="checkCircle"></span> উপস্থিতি</a>
+      <a href="lectures.html" data-page="lectures"><span class="ic" data-icon="book"></span> লেকচার</a>
+      <a href="upload-lecture.html" data-page="upload-lecture"><span class="ic" data-icon="edit"></span> লেকচার আপলোড</a>
+      <a href="assignments.html" data-page="assignments"><span class="ic" data-icon="fileText"></span> অ্যাসাইনমেন্ট</a>
+      <a href="exams.html" data-page="exams"><span class="ic" data-icon="clipboard"></span> পরীক্ষা</a>
+      <a href="results.html" data-page="results"><span class="ic" data-icon="trophy"></span> রেজাল্ট</a>
+      <a href="profile.html" data-page="profile"><span class="ic" data-icon="user"></span> প্রোফাইল</a>
+    </nav>
+
+    <main class="container teacher-main">
+      <div class="page-head">
+        <h1 id="welcomeText">স্বাগতম!</h1>
+        <p>আপনার ব্যাচ, ক্লাস ও শিক্ষার্থীদের সব তথ্য এক জায়গায়।</p>
       </div>
-      <p class="muted">এটি Phase 1-এর প্লেসহোল্ডার ড্যাশবোর্ড — শুধু লগইন ও রোল চেকের ফ্লো যাচাই করার জন্য।</p>
-      <button class="btn btn-outline" id="logoutBtn" type="button"><span class="ic" data-icon="logout"></span> লগআউট</button>
-    </div>
-  </main>
+      <span class="demo-badge" id="demoBadge" hidden>ডেমো তথ্য — এগুলো নমুনা ডেটা, আসল নয়</span>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="num" id="statBatches">—</div><div class="lbl">আমার ব্যাচ</div></div>
+        <div class="stat-card"><div class="num" id="statStudents">—</div><div class="lbl">আমার শিক্ষার্থী</div></div>
+        <div class="stat-card"><div class="num" id="statToday">—</div><div class="lbl">আজকের ক্লাস</div></div>
+        <div class="stat-card"><div class="num" id="statPending">—</div><div class="lbl">জমা বাকি অ্যাসাইনমেন্ট</div></div>
+      </div>
+
+      <div class="grid-2-col">
+        <div class="panel">
+          <div class="panel-head"><h2><span class="ic" data-icon="calendar"></span> আজকের ক্লাস</h2><a href="my-classes.html">সব ক্লাস <span class="ic" data-icon="arrowRight"></span></a></div>
+          <div id="todayClasses"><p class="muted">লোড হচ্ছে...</p></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2><span class="ic" data-icon="users"></span> আমার ব্যাচ</h2><a href="students.html">শিক্ষার্থী দেখুন <span class="ic" data-icon="arrowRight"></span></a></div>
+          <div id="myBatches"><p class="muted">লোড হচ্ছে...</p></div>
+        </div>
+      </div>
+
+      <div class="grid-2-col">
+        <div class="panel">
+          <div class="panel-head"><h2><span class="ic" data-icon="megaphone"></span> সর্বশেষ নোটিশ</h2></div>
+          <div id="latestNotices"><p class="muted">লোড হচ্ছে...</p></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2><span class="ic" data-icon="book"></span> আমার সাম্প্রতিক লেকচার</h2><a href="lectures.html">সব লেকচার <span class="ic" data-icon="arrowRight"></span></a></div>
+          <div id="recentLectures"><p class="muted">লোড হচ্ছে...</p></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2><span class="ic" data-icon="fileText"></span> জমা বাকি অ্যাসাইনমেন্ট ও আসন্ন পরীক্ষা</h2><a href="assignments.html">অ্যাসাইনমেন্ট <span class="ic" data-icon="arrowRight"></span></a></div>
+        <div id="pendingWork"><p class="muted">লোড হচ্ছে...</p></div>
+      </div>
+
+      <div class="quick-grid">
+        <a class="quick-link" href="attendance.html"><span class="ic" data-icon="checkCircle"></span>উপস্থিতি নিন</a>
+        <a class="quick-link" href="upload-lecture.html"><span class="ic" data-icon="edit"></span>লেকচার আপলোড</a>
+        <a class="quick-link" href="exams.html"><span class="ic" data-icon="clipboard"></span>পরীক্ষা</a>
+        <a class="quick-link" href="results.html"><span class="ic" data-icon="trophy"></span>নম্বর দিন</a>
+      </div>
+    </main>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-  <script src="../js/firebase/config.js"></script>
-  <script src="../js/firebase/auth.js"></script>
-  <script src="../js/core/helpers.js"></script>
-  <script src="../js/core/router.js"></script>
-  <script src="../js/core/app.js"></script>
-  <script src="../js/core/auth-guard.js"></script>
-  <script src="../js/core/role-guard.js"></script>
-  <script src="../js/components/icons.js"></script>
-  <script src="../js/components/loader.js"></script>
-  <script src="../js/components/toast.js"></script>
-  <script src="../js/components/navbar.js"></script>
-  <script src="../js/components/sidebar.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      SEMSLoader.show();
-      let user;
-      try {
-        user = await SEMSRoleGuard.requireRole('teacher');
-      } catch (e) { return; }
-      SEMSLoader.hide();
-      SEMSNavbar.render('navbarRoot', user);
-      document.getElementById('welcomeText').textContent =
-        'স্বাগতম, ' + (user.displayName || user.name || user.email || 'শিক্ষক') + '!';
-      document.getElementById('logoutBtn').addEventListener('click', async () => {
-        await SEMSAuth.signOut();
-        window.location.replace('../login.html');
-      });
-    });
-  </script>
+  <script src="../js/firebase/config.js?v=3"></script>
+  <script src="../js/firebase/auth.js?v=3"></script>
+  <script src="../js/firebase/firestore.js?v=3"></script>
+  <script src="../js/core/helpers.js?v=3"></script>
+  <script src="../js/core/router.js?v=3"></script>
+  <script src="../js/core/app.js?v=3"></script>
+  <script src="../js/core/auth-guard.js?v=3"></script>
+  <script src="../js/core/role-guard.js?v=3"></script>
+  <script src="../js/components/icons.js?v=3"></script>
+  <script src="../js/components/loader.js?v=3"></script>
+  <script src="../js/components/toast.js?v=3"></script>
+  <script src="../js/components/navbar.js?v=3"></script>
+  <script src="../js/teacher/common.js?v=3"></script>
+  <script src="../js/teacher/dashboard.js?v=3"></script>
 </body>
 </html>

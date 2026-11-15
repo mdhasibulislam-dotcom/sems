@@ -89,7 +89,8 @@ service cloud.firestore {
     // --- exams / results / attendance: Phase 4/5-এ পূর্ণাঙ্গ হবে ---
     match /exams/{examId} {
       allow read: if isSignedIn();
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if isAdmin()
+        || (isTeacher() && request.resource.data.teacherId == request.auth.uid);
     }
     match /results/{resultId} {
       allow read: if isSignedIn()

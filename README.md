@@ -3,7 +3,7 @@
 কোচিং/শিক্ষা প্রতিষ্ঠান পরিচালনার প্ল্যাটফর্ম — শিক্ষার্থী, শিক্ষক ও অ্যাডমিন প্যানেল।
 টেক: HTML, CSS, Vanilla JavaScript, Firebase (Auth, Firestore, Storage, Cloud Messaging, Hosting)।
 
-> **বর্তমান অবস্থা: Phase 2 সম্পূর্ণ।** Phase 3/4/5 এখনো বানানো হয়নি — শিক্ষক ও অ্যাডমিন ড্যাশবোর্ড প্লেসহোল্ডার।
+> **বর্তমান অবস্থা: Phase 3 সম্পূর্ণ।** Phase 4/5 এখনো বানানো হয়নি — অ্যাডমিন ড্যাশবোর্ড প্লেসহোল্ডার।
 
 ---
 
@@ -17,7 +17,7 @@
 - **রেজিস্ট্রেশন** (`register.html`) — নাম, ইমেইল, ইউজারনেম, ফোন, পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর, কনফার্ম), রোল Student/Teacher। **অ্যাডমিন নিজে রেজিস্টার করতে পারে না** — অ্যাডমিন অ্যাকাউন্ট শুধু অ্যাডমিন তৈরি করেন। Google সাইন আপও আছে।
 - **ভর্তি ফরম** (`admission.html`) — পুরো নাম, ছবি আপলোড (প্রিভিউসহ), জন্ম তারিখ, লিঙ্গ, রক্তের গ্রুপ, মোবাইল, অভিভাবকের নাম/ফোন, কলেজের নাম, ঠিকানা, কোর্স/ব্যাচ নির্বাচন, পূর্ববর্তী শিক্ষা, জরুরি যোগাযোগ। শিক্ষার্থীর ড্যাশবোর্ডে ঢোকার আগে ফরম পূরণ বাধ্যতামূলক। Firestore-এর `admissions` ও `students` কালেকশনে সংরক্ষিত হয়।
 - **পাসওয়ার্ড রিসেট** (`forgot-password.html`) — ইমেইলে `sendPasswordResetEmail`।
-- **প্লেসহোল্ডার ড্যাশবোর্ড** — `teacher/dashboard.html` (Phase 3), `admin/dashboard.html` (Phase 4)। প্রতিটিতে লগআউট বাটন আছে, auth-guard ও role-guard দিয়ে সুরক্ষিত।
+- **প্লেসহোল্ডার ড্যাশবোর্ড** — `admin/dashboard.html` (Phase 4)। প্রতিটিতে লগআউট বাটন আছে, auth-guard ও role-guard দিয়ে সুরক্ষিত।
 - **Firebase Rules** — `firebase/firestore.rules` (রোল-ভিত্তিক), `firebase/storage.rules`, `firebase/firestore.indexes.json`।
 
 ## Phase 2 — Student Dashboard ও প্রোফাইল (সম্পূর্ণ)
@@ -40,9 +40,35 @@
 
 সহায়ক ফাইল: `css/student.css` (global.css-এর ব্র্যান্ড রঙ), `js/student/common.js` (গার্ড, নেভবার/সাইডবার, Firestore পড়া, ডেমো ফলব্যাক, তারিখ/স্ট্যাটাস হিসাব) ও প্রতি পেজের আলাদা JS (`js/student/dashboard.js`, `profile.js`, `routine.js`, `lectures.js`, `lecture-details.js`, `notices.js`, `attendance.js`, `assignments.js`, `exams.js`, `results.js`, `notifications.js`)।
 
+## Phase 3 — Teacher Panel (সম্পূর্ণ)
+
+শিক্ষকের সব পেজ বাংলায়, মোবাইল রেসপন্সিভ, সাইডবার নেভিগেশনসহ। প্রতিটি পেজ `SEMSRoleGuard.requireRole('teacher')` দিয়ে সুরক্ষিত — লগইন না থাকলে `../login.html`, ভুল রোলে নিজের ড্যাশবোর্ড। গার্ড শেষ হলেই `SEMSLoader.hide()` কল হয়, তাই "লোড হচ্ছে..." আটকে থাকে না। Firebase চালু থাকলে (`SEMS.firebaseReady`) Firestore থেকে পড়ে/লেখে; ডেমো মোডে (`SEMS.isDemo`) localStorage-এর `sems_demo_*` নমুনা ডেটা দেখায় — সব নমুনা "ডেমো তথ্য" লেবেলসহ।
+
+**শিক্ষকের সুযোগ শুধু নিজের ব্যাচ/ক্লাস:** সব পড়া/লেখায় `teacherId == uid` অথবা `batchId ∈` নিজের ব্যাচ (`batches where teacherId == uid`) — অন্য শিক্ষকের ডেটা কখনো দেখানো বা লেখা হয় না।
+
+| পেজ | যা করে | Firestore |
+|---|---|---|
+| `teacher/dashboard.html` | স্বাগতম, নিজের ব্যাচ/শিক্ষার্থী/আজকের ক্লাস/জমা বাকি অ্যাসাইনমেন্টের সংখ্যা, আজকের ক্লাস, নিজের ব্যাচ, সর্বশেষ নোটিশ, সাম্প্রতিক লেকচার, জমা বাকি কাজ | `users`, `batches`, `classes`, `notices`, `lectures`, `assignments`, `exams`, `students` |
+| `teacher/profile.html` | নিজের প্রোফাইল (নাম, ইমেইল, মোবাইল, শিক্ষক আইডি, নিজের ব্যাচ); শুধু নাম/ফোন সম্পাদনা যায় | `users` (পড়া + আপডেট), `batches` |
+| `teacher/my-classes.html` | নিজের ক্লাসের তালিকা — ব্যাচ ফিল্টার + বিষয়/অধ্যায় খোঁজা, উপস্থিতি নেওয়ার লিংক | `classes` (`teacherId == uid`), `batches` |
+| `teacher/routine.html` | নিজের ক্লাসের সাপ্তাহিক রুটিন — তারিখ অনুযায়ী গ্রুপ, "আজ" ট্যাগ, অবস্থা (আসন্ন/চলমান/সম্পন্ন) | `classes` (`teacherId == uid`), `batches` |
+| `teacher/students.html` | নিজের ব্যাচের শিক্ষার্থীদের তালিকা — ব্যাচ ফিল্টার + নাম/ইমেইল খোঁজা | `students` (`batchId ∈ নিজের ব্যাচ`), `batches` |
+| `teacher/attendance.html` | ক্লাস + তারিখ বেছে সেই ব্যাচের শিক্ষার্থীদের উপস্থিত/অনুপস্থিত চিহ্নিত করে সংরক্ষণ (আগের নেওয়া উপস্থিতি থাকলে তা দেখায়) | `classes`, `students`, `attendance`-এ লেখা (`studentId, classId, batchId, teacherId, date, status`) |
+| `teacher/lectures.html` | নিজের লেকচারের তালিকা — বিষয় ফিল্টার + খোঁজা, PDF/স্লাইড/রেকর্ডিং লিংক | `lectures` (`teacherId == uid`) |
+| `teacher/upload-lecture.html` | লেকচার প্রকাশের ফরম (শিরোনাম, বিষয়, অধ্যায়, ব্যাচ, প্রকাশের তারিখ, বিবরণ, PDF/স্লাইড/রেকর্ডিং লিংক) | `lectures`-এ লেখা (`published: true`, `teacherId: uid`) |
+| `teacher/assignments.html` | অ্যাসাইনমেন্ট তৈরি (শিরোনাম, বিষয়, ব্যাচ, শেষ তারিখ, বিবরণ) + নিজের অ্যাসাইনমেন্টের তালিকা ও জমার সংখ্যা | `assignments`-এ লেখা/পড়া (`teacherId`), জমা `submissions` থেকে গোনা |
+| `teacher/exams.html` | পরীক্ষা তৈরি (শিরোনাম, বিষয়, ব্যাচ, তারিখ, শুরুর সময়, সময়কাল, মোট নম্বর) + নিজের পরীক্ষার তালিকা | `exams`-এ লেখা/পড়া (`teacherId`) |
+| `teacher/results.html` | পরীক্ষা বেছে সেই ব্যাচের প্রত্যেক শিক্ষার্থীর নম্বর দেওয়া — নম্বর লিখলেই গ্রেড দেখায়, আগে দেওয়া নম্বরও দেখা যায় | `exams`, `students`, `results`-এ লেখা/পড়া (`examId, studentId, teacherId, marks, totalMarks, grade`) |
+
+সহায়ক ফাইল: `css/teacher.css` (global.css-এর ব্র্যান্ড রঙ, student.css-এর মতো মোবাইল রেসপন্সিভ), `js/teacher/common.js` (গার্ড, নেভবার/সাইডবার, Firestore পড়া/লেখা, ডেমো ফলব্যাক, গ্রেড হিসাব) ও প্রতি পেজের আলাদা JS (`js/teacher/dashboard.js`, `profile.js`, `my-classes.js`, `routine.js`, `students.js`, `attendance.js`, `lectures.js`, `upload-lecture.js`, `assignments.js`, `exams.js`, `results.js`)।
+
+**নোট — লেকচার ফাইল আপলোড নয়, লিংক:** Firebase Storage-এ ফাইল আপলোড করতে ৩ ফেব্রুয়ারি ২০২৬ থেকে Blaze (pay-as-you-go) প্ল্যান লাগে — Spark প্ল্যানে Storage বাকেট পাওয়া যায় না। তাই আপাতত PDF/স্লাইড/রেকর্ডিংয়ের লিংক নেওয়া হয় (কোডে মন্তব্যসহ লেখা আছে)।
+
+**নোট — এখনো খালি থাকবে, যতক্ষণ ডেটা না থাকে:** Firestore-এ `batches` কালেকশনে `teacherId == uid` ব্যাচ না থাকলে শিক্ষকের পেজগুলোতে বাংলায় খালি অবস্থা দেখাবে — অ্যাডমিন ব্যাচ দিলে (Phase 4) তবেই ক্লাস/শিক্ষার্থী দেখা যাবে। `classes`, `assignments`, `exams`, `attendance`, `results` কালেকশনের জন্য `firebase/firestore.rules`-এ এখনো আলাদা নিয়ম নেই, তাই Phase 4-এ অ্যাডমিন প্যানেল বানানোর সময় এগুলোর rules যোগ করতে হবে।
+
 ⚠️ **এখনো খালি থাকবে, যতক্ষণ অ্যাডমিন/শিক্ষক ডেটা না দেন:** Firestore-এ `classes`, `lectures`, `notices`, `exams`, `assignments`, `attendance`, `results` কালেকশনে কিছু না থাকলে প্রতিটি পেজে বাংলায় খালি অবস্থা ("এখনো কোনো ... দেওয়া হয়নি") দেখাবে — এটাই স্বাভাবিক। `classes` ও `assignments` কালেকশনের জন্য `firebase/firestore.rules`-এ এখনো আলাদা নিয়ম নেই, তাই Phase 4-এ অ্যাডমিন প্যানেল বানানোর সময় এগুলোর rules যোগ করতে হবে।
 
-## ফোল্ডার স্ট্রাকচার (Phase 1 + 2)
+## ফোল্ডার স্ট্রাকচার (Phase 1 + 2 + 3)
 
 ```
 sems/
@@ -56,6 +82,7 @@ sems/
 ├── css/
 │   ├── global.css              # রঙ, বাটন, ফর্ম, কার্ড, ল্যান্ডিং
 │   ├── student.css             # Phase 2 — শিক্ষার্থী পেজ (ব্র্যান্ড রঙ, রেসপন্সিভ)
+│   ├── teacher.css             # Phase 3 — শিক্ষক পেজ (ব্র্যান্ড রঙ, রেসপন্সিভ)
 │   ├── auth.css                # লগইন/রেজিস্ট্রেশন/রিসেট
 │   ├── admission.css           # ভর্তি ফরম
 │   ├── dashboard.css           # ড্যাশবোর্ড
@@ -93,6 +120,19 @@ sems/
 │       ├── exams.js
 │       ├── results.js
 │       └── notifications.js
+│   └── teacher/                # Phase 3 — প্রতি পেজের আলাদা JS
+│       ├── common.js           # গার্ড, Firestore পড়া/লেখা, ডেমো ফলব্যাক, গ্রেড হিসাব
+│       ├── dashboard.js
+│       ├── profile.js
+│       ├── my-classes.js
+│       ├── routine.js
+│       ├── students.js
+│       ├── attendance.js
+│       ├── lectures.js
+│       ├── upload-lecture.js
+│       ├── assignments.js
+│       ├── exams.js
+│       └── results.js
 ├── student/                    # Phase 2 — সব পেজ সম্পূর্ণ
 │   ├── dashboard.html
 │   ├── profile.html
@@ -105,7 +145,18 @@ sems/
 │   ├── exams.html
 │   ├── results.html
 │   └── notifications.html
-├── teacher/dashboard.html      # Phase 3 প্লেসহোল্ডার
+├── teacher/                    # Phase 3 — সব পেজ সম্পূর্ণ
+│   ├── dashboard.html
+│   ├── profile.html
+│   ├── my-classes.html
+│   ├── routine.html
+│   ├── students.html
+│   ├── attendance.html
+│   ├── lectures.html
+│   ├── upload-lecture.html
+│   ├── assignments.html
+│   ├── exams.html
+│   └── results.html
 ├── admin/dashboard.html        # Phase 4 প্লেসহোল্ডার
 ├── firebase/
 │   ├── firestore.rules
@@ -144,8 +195,7 @@ python3 -m http.server 8000
 # ব্রাউজারে: http://localhost:8000/
 ```
 
-## পরের ধাপ (Phase 3–5, এখনো হয়নি)
+## পরের ধাপ (Phase 4–5, এখনো হয়নি)
 
-- **Phase 3 — Teacher Panel:** নিজের ব্যাচ/ক্লাস, লেকচার, উপস্থিতি, নম্বর, অ্যাসাইনমেন্ট।
 - **Phase 4 — Admin Panel:** রুটিন, ব্যাচ, লেকচার/স্লাইড (প্রকাশের তারিখসহ), নোটিশ, পরীক্ষা, সেটিংস। সঙ্গে `classes`, `assignments`, `submissions` কালেকশনের Firestore Rules যোগ করতে হবে।
 - **Phase 5 — Exam/Attendance/Notifications:** অনলাইন পরীক্ষার ইঞ্জিন, উপস্থিতি নেওয়া, FCM নোটিফিকেশন।

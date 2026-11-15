@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অ্যাসাইনমেন্ট — SEMS</title>
+  <link rel="stylesheet" href="../css/global.css?v=3">
+  <link rel="stylesheet" href="../css/dashboard.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/teacher.css?v=3">
+  <link rel="stylesheet" href="../css/responsive.css?v=3">
+</head>
+<body>
+  <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+  <div id="toastRoot"></div>
+  <div id="navbarRoot"></div>
+
+  <div class="layout-with-sidebar">
+    <nav class="sems-sidebar teacher-sidebar" id="sidebarRoot">
+      <a href="dashboard.html" data-page="dashboard"><span class="ic" data-icon="home"></span> ড্যাশবোর্ড</a>
+      <a href="my-classes.html" data-page="my-classes"><span class="ic" data-icon="calendar"></span> আমার ক্লাস</a>
+      <a href="routine.html" data-page="routine"><span class="ic" data-icon="clock"></span> রুটিন</a>
+      <a href="students.html" data-page="students"><span class="ic" data-icon="users"></span> শিক্ষার্থী</a>
+      <a href="attendance.html" data-page="attendance"><span class="ic" data-icon="checkCircle"></span> উপস্থিতি</a>
+      <a href="lectures.html" data-page="lectures"><span class="ic" data-icon="book"></span> লেকচার</a>
+      <a href="upload-lecture.html" data-page="upload-lecture"><span class="ic" data-icon="edit"></span> লেকচার আপলোড</a>
+      <a href="assignments.html" data-page="assignments"><span class="ic" data-icon="fileText"></span> অ্যাসাইনমেন্ট</a>
+      <a href="exams.html" data-page="exams"><span class="ic" data-icon="clipboard"></span> পরীক্ষা</a>
+      <a href="results.html" data-page="results"><span class="ic" data-icon="trophy"></span> রেজাল্ট</a>
+      <a href="profile.html" data-page="profile"><span class="ic" data-icon="user"></span> প্রোফাইল</a>
+    </nav>
+
+    <main class="container teacher-main">
+      <div class="page-head">
+        <h1><span class="ic" data-icon="fileText"></span> অ্যাসাইনমেন্ট</h1>
+        <p>আপনার ব্যাচের জন্য অ্যাসাইনমেন্ট তৈরি করুন ও জমার অবস্থা দেখুন।</p>
+      </div>
+      <span class="demo-badge" id="demoBadge" hidden>ডেমো তথ্য — এগুলো নমুনা ডেটা, আসল নয়</span>
+
+      <div class="panel">
+        <h2><span class="ic" data-icon="edit"></span> নতুন অ্যাসাইনমেন্ট তৈরি করুন</h2>
+        <div class="notice notice-ok" id="asgMsg" hidden></div>
+        <form id="assignmentForm" novalidate>
+          <label class="field"><span>শিরোনাম *</span><input type="text" id="asgTitle" required placeholder="যেমন: ভেক্টরের ১০টি গাণিতিক সমস্যা"></label>
+          <label class="field"><span>বিষয় *</span><input type="text" id="asgSubject" required placeholder="যেমন: পদার্থবিজ্ঞান"></label>
+          <label class="field"><span>ব্যাচ *</span><select id="asgBatch" required><option value="">ব্যাচ বাছুন...</option></select></label>
+          <label class="field"><span>জমার শেষ তারিখ *</span><input type="date" id="asgDue" required></label>
+          <label class="field"><span>বিবরণ</span><textarea id="asgDesc" rows="3" placeholder="অ্যাসাইনমেন্টের নির্দেশনা লিখুন"></textarea></label>
+          <button type="submit" class="btn btn-primary">অ্যাসাইনমেন্ট তৈরি করুন</button>
+        </form>
+      </div>
+      <div class="panel">
+        <h2>আমার অ্যাসাইনমেন্ট</h2>
+        <div id="assignmentsWrap"><p class="muted">লোড হচ্ছে...</p></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="../js/firebase/config.js?v=3"></script>
+  <script src="../js/firebase/auth.js?v=3"></script>
+  <script src="../js/firebase/firestore.js?v=3"></script>
+  <script src="../js/core/helpers.js?v=3"></script>
+  <script src="../js/core/router.js?v=3"></script>
+  <script src="../js/core/app.js?v=3"></script>
+  <script src="../js/core/auth-guard.js?v=3"></script>
+  <script src="../js/core/role-guard.js?v=3"></script>
+  <script src="../js/components/icons.js?v=3"></script>
+  <script src="../js/components/loader.js?v=3"></script>
+  <script src="../js/components/toast.js?v=3"></script>
+  <script src="../js/components/navbar.js?v=3"></script>
+  <script src="../js/teacher/common.js?v=3"></script>
+  <script src="../js/teacher/assignments.js?v=3"></script>
+</body>
+</html>

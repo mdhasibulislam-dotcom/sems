@@ -1,0 +1,175 @@
+/* SEMS — css/teacher.css | Phase 3
+   শিক্ষক পেজগুলোর স্টাইল: global.css-এর ব্র্যান্ড রঙ
+   (--primary #1a56db, --accent #0e9f6e) ব্যবহার করে — student.css-এর
+   মতোই। মোবাইল রেসপন্সিভ — সাইডবার ছোট স্ক্রিনে উপরে চলে আসে। */
+
+.teacher-main { padding: 24px 16px 56px; max-width: 980px; }
+.page-head { margin-bottom: 20px; }
+.page-head h1 { font-size: 1.5rem; margin-bottom: 4px; }
+.page-head p { color: var(--muted); }
+
+.demo-badge {
+  display: inline-block; background: #fef3c7; border: 1px solid #f59e0b;
+  color: #92400e; font-size: 0.85rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 999px; margin-bottom: 12px;
+}
+
+/* স্ট্যাট কার্ড */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.stat-card {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 16px; text-align: center;
+}
+.stat-card .num { font-size: 1.6rem; font-weight: 800; color: var(--primary); }
+.stat-card .lbl { color: var(--muted); font-size: 0.9rem; }
+
+/* প্যানেল / কার্ড */
+.panel {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px;
+}
+.panel h2 { font-size: 1.15rem; margin-bottom: 12px; }
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.panel-head h2 { margin-bottom: 0; }
+.panel-head a { font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+.grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+/* তালিকা আইটেম */
+.list-item { border-bottom: 1px solid var(--border); padding: 12px 0; }
+.list-item:last-child { border-bottom: none; padding-bottom: 0; }
+.list-item:first-child { padding-top: 0; }
+.list-item h3 { font-size: 1.02rem; margin-bottom: 2px; }
+.list-item p { color: var(--muted); font-size: 0.92rem; }
+.list-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 0.88rem; margin-top: 4px; }
+.list-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+/* ব্যাজ */
+.badge {
+  display: inline-block; padding: 2px 10px; border-radius: 999px;
+  font-size: 0.8rem; font-weight: 700; white-space: nowrap;
+}
+.badge-upcoming { background: var(--primary-light); color: var(--primary); }
+.badge-ongoing { background: #d1fae5; color: #065f46; }
+.badge-completed { background: #f3f4f6; color: var(--muted); }
+.badge-present { background: #d1fae5; color: #065f46; }
+.badge-absent { background: #fee2e2; color: #991b1b; }
+.badge-urgent { background: #fee2e2; color: #991b1b; }
+.badge-exam { background: #fef3c7; color: #92400e; }
+.badge-info { background: var(--primary-light); color: var(--primary); }
+.badge-ok { background: #d1fae5; color: #065f46; }
+.badge-muted { background: #f3f4f6; color: var(--muted); }
+
+/* খালি অবস্থা */
+.empty-state {
+  text-align: center; color: var(--muted); padding: 28px 16px;
+  border: 1px dashed var(--border); border-radius: var(--radius); background: #fafafa;
+}
+.empty-state .big { font-size: 2rem; margin-bottom: 6px; }
+
+/* প্রোফাইল */
+.profile-top { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.profile-photo {
+  width: 110px; height: 130px; border-radius: 12px; object-fit: cover;
+  border: 1px solid var(--border); background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem; font-weight: 800; color: var(--primary); overflow: hidden;
+}
+.profile-photo img { width: 100%; height: 100%; object-fit: cover; }
+.kv { display: grid; grid-template-columns: 160px 1fr; gap: 8px 14px; font-size: 0.97rem; }
+.kv dt { color: var(--muted); font-weight: 600; }
+.kv dd { margin: 0; }
+.section-title { font-size: 1.05rem; margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+
+/* রুটিন: তারিখ অনুযায়ী দিন */
+.day-block { margin-bottom: 16px; }
+.day-block h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--primary); }
+.day-block h3 .today-tag { font-size: 0.75rem; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 999px; vertical-align: middle; margin-left: 6px; }
+
+/* টেবিল */
+.table-wrap { overflow-x: auto; }
+table.data { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+table.data th, table.data td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
+table.data th { color: var(--muted); font-size: 0.85rem; }
+
+/* ফিল্টার */
+.filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-row select, .filter-row input {
+  padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+  font-family: var(--font); font-size: 1rem; background: #fff;
+}
+.filter-row input { flex: 1; min-width: 180px; }
+
+/* ছোট বাটন */
+.btn-sm { padding: 7px 14px; font-size: 0.9rem; }
+
+/* কুইক লিংক */
+.quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.quick-link {
+  display: block; background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px; text-align: center; font-weight: 700; color: var(--text); box-shadow: var(--shadow);
+}
+.quick-link:hover { background: var(--primary-light); color: var(--primary); text-decoration: none; }
+.quick-link span { display: block; font-size: 1.5rem; margin-bottom: 4px; }
+
+/* উপস্থিতি: উপস্থিত/অনুপস্থিত টগল */
+.att-toggle { display: inline-flex; gap: 6px; }
+.att-toggle button {
+  min-height: 44px; padding: 8px 16px; border-radius: 999px;
+  border: 1px solid var(--border); background: #fff; font-family: var(--font);
+  font-size: 0.95rem; font-weight: 700; cursor: pointer; color: var(--muted);
+}
+.att-toggle button.on-present { background: #d1fae5; border-color: #34d399; color: #065f46; }
+.att-toggle button.on-absent { background: #fee2e2; border-color: #f87171; color: #991b1b; }
+
+/* নম্বর ইনপুট */
+.marks-input {
+  width: 90px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  font-family: var(--font); font-size: 1rem; text-align: center;
+}
+.marks-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+
+/* সাইডবারে সক্রিয় লিংক */
+.teacher-sidebar a.active { background: var(--primary-light); color: var(--primary); }
+
+/* ফর্মের ইনপুট: iOS-এ 16px-এর নিচে ফন্ট হলে অটো-জুম হয়, তাই 1rem রাখা হয়েছে */
+.teacher-main .field input, .teacher-main .field select, .teacher-main .field textarea { font-size: 1rem; }
+.teacher-main .btn { min-height: 44px; }
+
+@media (max-width: 768px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-2-col { grid-template-columns: 1fr; }
+  .quick-grid { grid-template-columns: repeat(2, 1fr); }
+  .kv { grid-template-columns: 120px 1fr; }
+  /* সাইডবার: ফোনে নেভবারের নিচে আটকে থাকা (sticky) স্ক্রলযোগ্য
+     পিল-বার — ১১টা লিংক এক লাইনে স্ক্রল করা যায়, পেজের পাশে
+     ছিটকে যায় না, ট্যাপ টার্গেট ৪৪px */
+  .teacher-sidebar {
+    position: sticky; top: 57px; z-index: 5;
+    display: flex; gap: 6px; overflow-x: auto; padding: 10px 12px;
+    background: #fff; border-bottom: 1px solid var(--border);
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .teacher-sidebar::-webkit-scrollbar { display: none; }
+  .teacher-sidebar a {
+    white-space: nowrap; flex-shrink: 0; min-height: 44px;
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px;
+  }
+  .teacher-sidebar a.active { border-color: var(--primary); }
+}
+
+/* ৩৬০px ফোন: কার্ড/প্রোফাইল/ফিল্টার যাতে না ফেটে যায় */
+@media (max-width: 480px) {
+  .teacher-main { padding: 16px 12px 48px; }
+  .panel { padding: 16px; }
+  .page-head h1 { font-size: 1.35rem; }
+  .kv { grid-template-columns: 1fr; gap: 2px 0; }
+  .kv dd { margin-bottom: 8px; }
+  .profile-top { gap: 12px; }
+  .filter-row select, .filter-row input { min-width: 0; flex: 1 1 100%; }
+  .stat-grid { gap: 10px; }
+  .stat-card { padding: 12px 8px; }
+  .stat-card .num { font-size: 1.4rem; }
+  .quick-grid { gap: 10px; }
+  .list-actions .btn { min-height: 44px; }
+  .att-toggle button { min-height: 44px; padding: 8px 12px; }
+}

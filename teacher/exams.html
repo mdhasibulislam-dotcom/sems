@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>পরীক্ষা — SEMS</title>
+  <link rel="stylesheet" href="../css/global.css?v=3">
+  <link rel="stylesheet" href="../css/dashboard.css?v=3">
+  <link rel="stylesheet" href="../css/components.css?v=3">
+  <link rel="stylesheet" href="../css/teacher.css?v=3">
+  <link rel="stylesheet" href="../css/responsive.css?v=3">
+</head>
+<body>
+  <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+  <div id="toastRoot"></div>
+  <div id="navbarRoot"></div>
+
+  <div class="layout-with-sidebar">
+    <nav class="sems-sidebar teacher-sidebar" id="sidebarRoot">
+      <a href="dashboard.html" data-page="dashboard"><span class="ic" data-icon="home"></span> ড্যাশবোর্ড</a>
+      <a href="my-classes.html" data-page="my-classes"><span class="ic" data-icon="calendar"></span> আমার ক্লাস</a>
+      <a href="routine.html" data-page="routine"><span class="ic" data-icon="clock"></span> রুটিন</a>
+      <a href="students.html" data-page="students"><span class="ic" data-icon="users"></span> শিক্ষার্থী</a>
+      <a href="attendance.html" data-page="attendance"><span class="ic" data-icon="checkCircle"></span> উপস্থিতি</a>
+      <a href="lectures.html" data-page="lectures"><span class="ic" data-icon="book"></span> লেকচার</a>
+      <a href="upload-lecture.html" data-page="upload-lecture"><span class="ic" data-icon="edit"></span> লেকচার আপলোড</a>
+      <a href="assignments.html" data-page="assignments"><span class="ic" data-icon="fileText"></span> অ্যাসাইনমেন্ট</a>
+      <a href="exams.html" data-page="exams"><span class="ic" data-icon="clipboard"></span> পরীক্ষা</a>
+      <a href="results.html" data-page="results"><span class="ic" data-icon="trophy"></span> রেজাল্ট</a>
+      <a href="profile.html" data-page="profile"><span class="ic" data-icon="user"></span> প্রোফাইল</a>
+    </nav>
+
+    <main class="container teacher-main">
+      <div class="page-head">
+        <h1><span class="ic" data-icon="clipboard"></span> পরীক্ষা</h1>
+        <p>আপনার ব্যাচের জন্য পরীক্ষা তৈরি করুন ও তালিকা দেখুন।</p>
+      </div>
+      <span class="demo-badge" id="demoBadge" hidden>ডেমো তথ্য — এগুলো নমুনা ডেটা, আসল নয়</span>
+
+      <div class="panel">
+        <h2><span class="ic" data-icon="edit"></span> নতুন পরীক্ষা তৈরি করুন</h2>
+        <div class="notice notice-ok" id="examMsg" hidden></div>
+        <form id="examForm" novalidate>
+          <label class="field"><span>পরীক্ষার শিরোনাম *</span><input type="text" id="examTitle" required placeholder="যেমন: মাসিক পরীক্ষা — পদার্থবিজ্ঞান"></label>
+          <label class="field"><span>বিষয় *</span><input type="text" id="examSubject" required placeholder="যেমন: পদার্থবিজ্ঞান"></label>
+          <label class="field"><span>ব্যাচ *</span><select id="examBatch" required><option value="">ব্যাচ বাছুন...</option></select></label>
+          <label class="field"><span>পরীক্ষার তারিখ *</span><input type="date" id="examDate" required></label>
+          <label class="field"><span>শুরুর সময় *</span><input type="time" id="examStart" required></label>
+          <label class="field"><span>সময়কাল (মিনিট) *</span><input type="number" id="examDuration" min="5" max="600" required placeholder="যেমন: 60"></label>
+          <label class="field"><span>মোট নম্বর *</span><input type="number" id="examTotal" min="1" max="1000" required placeholder="যেমন: 50"></label>
+          <button type="submit" class="btn btn-primary">পরীক্ষা তৈরি করুন</button>
+        </form>
+      </div>
+      <div class="panel">
+        <h2>আমার পরীক্ষা</h2>
+        <div id="examsWrap"><p class="muted">লোড হচ্ছে...</p></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="../js/firebase/config.js?v=3"></script>
+  <script src="../js/firebase/auth.js?v=3"></script>
+  <script src="../js/firebase/firestore.js?v=3"></script>
+  <script src="../js/core/helpers.js?v=3"></script>
+  <script src="../js/core/router.js?v=3"></script>
+  <script src="../js/core/app.js?v=3"></script>
+  <script src="../js/core/auth-guard.js?v=3"></script>
+  <script src="../js/core/role-guard.js?v=3"></script>
+  <script src="../js/components/icons.js?v=3"></script>
+  <script src="../js/components/loader.js?v=3"></script>
+  <script src="../js/components/toast.js?v=3"></script>
+  <script src="../js/components/navbar.js?v=3"></script>
+  <script src="../js/teacher/common.js?v=3"></script>
+  <script src="../js/teacher/exams.js?v=3"></script>
+</body>
+</html>
