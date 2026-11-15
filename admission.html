@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ভর্তি ফরম — SEMS</title>
-  <link rel="stylesheet" href="css/global.css">
-  <link rel="stylesheet" href="css/admission.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/global.css?v=4">
+  <link rel="stylesheet" href="css/admission.css?v=4">
+  <link rel="stylesheet" href="css/components.css?v=4">
+  <link rel="stylesheet" href="css/responsive.css?v=4">
 </head>
 <body>
   <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
@@ -101,18 +101,18 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-  <script src="js/firebase/config.js"></script>
-  <script src="js/firebase/auth.js"></script>
-  <script src="js/firebase/firestore.js"></script>
-  <script src="js/firebase/storage.js"></script>
-  <script src="js/core/helpers.js"></script>
-  <script src="js/core/router.js"></script>
-  <script src="js/core/app.js"></script>
-  <script src="js/core/auth-guard.js"></script>
-  <script src="js/core/role-guard.js"></script>
-  <script src="js/components/loader.js"></script>
-  <script src="js/components/toast.js"></script>
-  <script src="js/components/navbar.js"></script>
+  <script src="js/firebase/config.js?v=4"></script>
+  <script src="js/firebase/auth.js?v=4"></script>
+  <script src="js/firebase/firestore.js?v=4"></script>
+  <script src="js/firebase/storage.js?v=4"></script>
+  <script src="js/core/helpers.js?v=4"></script>
+  <script src="js/core/router.js?v=4"></script>
+  <script src="js/core/app.js?v=4"></script>
+  <script src="js/core/auth-guard.js?v=4"></script>
+  <script src="js/core/role-guard.js?v=4"></script>
+  <script src="js/components/loader.js?v=4"></script>
+  <script src="js/components/toast.js?v=4"></script>
+  <script src="js/components/navbar.js?v=4"></script>
   <script>
     let currentUser = null;
     let photoDataUrl = '';
@@ -188,7 +188,13 @@
           setTimeout(() => { window.location.replace('student/dashboard.html'); }, 1200);
         } catch (err) {
           SEMSLoader.hide();
-          errBox.textContent = err && err.message ? err.message : 'ফরম জমা দেওয়া যায়নি। আবার চেষ্টা করুন।';
+          var msg = err && err.message ? err.message : 'ফরম জমা দেওয়া যায়নি। আবার চেষ্টা করুন।';
+          // অনুমতির সমস্যা হলে বাংলায় কারণটা জানানো — সাধারণত
+          // Firestore-এর Rules না বসানো থাকলে এটা হয়।
+          if (msg.indexOf('permission-denied') !== -1 || msg.indexOf('PERMISSION_DENIED') !== -1) {
+            msg = 'ফরম জমা দেওয়া যায়নি: Firestore-এর Rules বসানো হয়নি। Firebase Console-এ Firestore > Rules-এ SEMS-এর নিয়মগুলো বসিয়ে Publish করতে হবে।';
+          }
+          errBox.textContent = msg;
           errBox.hidden = false;
         }
       });

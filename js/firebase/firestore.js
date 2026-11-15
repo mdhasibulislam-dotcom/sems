@@ -20,9 +20,24 @@
         await SEMSAuth.markAdmissionCompleted(user.uid);
         return record;
       }
+      // ছবি আপলোড: Storage-এর নিয়ম (Rules) না বসানো থাকলে বা
+      // Storage চালু না থাকলে আপলোড আটকে/ব্যর্থ হতে পারে। ছবি
+      // ফরমের মূল অংশ না — আপলোড না হলে ছবি ছাড়াই ফরম জমা হবে,
+      // যাতে "লোড হচ্ছে..."-এ আটকে ড্যাশবোর্ড না আসার মতো অবস্থা
+      // আর না হয়। (নিয়ম বসালে পরের বার ছবিসহ জমা হবে।)
       var photoURL = '';
       if (photoFile) {
-        photoURL = await SEMSStorage.uploadStudentPhoto(user.uid, photoFile);
+        try {
+          photoURL = await Promise.race([
+            SEMSStorage.uploadStudentPhoto(user.uid, photoFile),
+            new Promise(function (resolve) {
+              setTimeout(function () { resolve(''); }, 15000);
+            })
+          ]);
+        } catch (e) {
+          console.warn('[SEMS] ছবি আপলোড হয়নি, ছবি ছাড়াই জমা হচ্ছে:', e && e.message);
+          photoURL = '';
+        }
       }
       var db = firebase.firestore();
       var record = Object.assign({}, data, {
