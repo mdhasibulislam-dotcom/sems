@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>প্রোফাইল — SEMS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/student.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+  <div id="toastRoot"></div>
+  <div id="navbarRoot"></div>
+
+  <div class="layout-with-sidebar">
+    <nav class="sems-sidebar student-sidebar" id="sidebarRoot">
+      <a href="dashboard.html" data-page="dashboard">🏠 ড্যাশবোর্ড</a>
+      <a href="routine.html" data-page="routine">🗓️ ক্লাস রুটিন</a>
+      <a href="lectures.html" data-page="lectures">📚 লেকচার</a>
+      <a href="notices.html" data-page="notices">📢 নোটিশ</a>
+      <a href="attendance.html" data-page="attendance">✅ উপস্থিতি</a>
+      <a href="assignments.html" data-page="assignments">📝 অ্যাসাইনমেন্ট</a>
+      <a href="exams.html" data-page="exams">📋 পরীক্ষা</a>
+      <a href="results.html" data-page="results">🏆 রেজাল্ট</a>
+      <a href="notifications.html" data-page="notifications">🔔 নোটিফিকেশন</a>
+      <a href="profile.html" data-page="profile">👤 প্রোফাইল</a>
+    </nav>
+
+    <main class="container student-main">
+      <div class="page-head">
+        <h1>👤 আমার প্রোফাইল</h1>
+        <p>ভর্তি ফরমের তথ্য ও যোগাযোগের বিবরণ।</p>
+      </div>
+      <span class="demo-badge" id="demoBadge" hidden>ডেমো তথ্য — এগুলো নমুনা ডেটা, আসল নয়</span>
+
+      <div class="panel">
+        <div class="profile-top">
+          <div class="profile-photo" id="profilePhoto">?</div>
+          <div>
+            <h2 id="profileName">লোড হচ্ছে...</h2>
+            <p class="muted" id="profileMeta"></p>
+          </div>
+        </div>
+        <div id="infoList"><p class="muted">তথ্য লোড হচ্ছে...</p></div>
+      </div>
+
+      <div class="panel">
+        <h2>✏️ তথ্য আপডেট করুন</h2>
+        <p class="muted">শুধু নাম, মোবাইল নম্বর ও ঠিকানা পরিবর্তন করা যায়। অন্য তথ্য বদলাতে অ্যাডমিনের সঙ্গে যোগাযোগ করুন।</p>
+        <div class="notice notice-ok" id="profileMsg" hidden></div>
+        <form id="editForm" novalidate>
+          <label class="field"><span>পুরো নাম</span><input type="text" id="editName" required></label>
+          <label class="field"><span>মোবাইল নম্বর</span><input type="tel" id="editPhone" placeholder="01XXXXXXXXX"></label>
+          <label class="field"><span>ঠিকানা</span><textarea id="editAddress" rows="2"></textarea></label>
+          <button type="submit" class="btn btn-primary">সংরক্ষণ করুন</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="../js/firebase/config.js"></script>
+  <script src="../js/firebase/auth.js"></script>
+  <script src="../js/firebase/firestore.js"></script>
+  <script src="../js/core/helpers.js"></script>
+  <script src="../js/core/router.js"></script>
+  <script src="../js/core/app.js"></script>
+  <script src="../js/core/auth-guard.js"></script>
+  <script src="../js/core/role-guard.js"></script>
+  <script src="../js/components/loader.js"></script>
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/student/common.js"></script>
+  <script src="../js/student/profile.js"></script>
+</body>
+</html>

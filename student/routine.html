@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ক্লাস রুটিন — SEMS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/student.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div id="loader" class="loader-overlay"><div class="spinner"></div><p>লোড হচ্ছে...</p></div>
+  <div id="toastRoot"></div>
+  <div id="navbarRoot"></div>
+
+  <div class="layout-with-sidebar">
+    <nav class="sems-sidebar student-sidebar" id="sidebarRoot">
+      <a href="dashboard.html" data-page="dashboard">🏠 ড্যাশবোর্ড</a>
+      <a href="routine.html" data-page="routine">🗓️ ক্লাস রুটিন</a>
+      <a href="lectures.html" data-page="lectures">📚 লেকচার</a>
+      <a href="notices.html" data-page="notices">📢 নোটিশ</a>
+      <a href="attendance.html" data-page="attendance">✅ উপস্থিতি</a>
+      <a href="assignments.html" data-page="assignments">📝 অ্যাসাইনমেন্ট</a>
+      <a href="exams.html" data-page="exams">📋 পরীক্ষা</a>
+      <a href="results.html" data-page="results">🏆 রেজাল্ট</a>
+      <a href="notifications.html" data-page="notifications">🔔 নোটিফিকেশন</a>
+      <a href="profile.html" data-page="profile">👤 প্রোফাইল</a>
+    </nav>
+
+    <main class="container student-main">
+      <div class="page-head">
+        <h1>🗓️ সাপ্তাহিক ক্লাস রুটিন</h1>
+        <p>আপনার ব্যাচের ক্লাসের তারিখ, সময়, বিষয় ও শিক্ষক।</p>
+      </div>
+      <span class="demo-badge" id="demoBadge" hidden>ডেমো তথ্য — এগুলো নমুনা ডেটা, আসল নয়</span>
+
+      <div class="panel">
+        <div id="routineWrap"><p class="muted">রুটিন লোড হচ্ছে...</p></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+  <script src="../js/firebase/config.js"></script>
+  <script src="../js/firebase/auth.js"></script>
+  <script src="../js/firebase/firestore.js"></script>
+  <script src="../js/core/helpers.js"></script>
+  <script src="../js/core/router.js"></script>
+  <script src="../js/core/app.js"></script>
+  <script src="../js/core/auth-guard.js"></script>
+  <script src="../js/core/role-guard.js"></script>
+  <script src="../js/components/loader.js"></script>
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/navbar.js"></script>
+  <script src="../js/student/common.js"></script>
+  <script src="../js/student/routine.js"></script>
+</body>
+</html>

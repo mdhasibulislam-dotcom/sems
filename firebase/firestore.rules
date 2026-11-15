@@ -106,6 +106,30 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // --- classes (রুটিন): লগইন করা সবাই পড়ে; অ্যাডমিন/শিক্ষক লেখে ---
+    match /classes/{classId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin()
+        || (isTeacher() && request.resource.data.teacherId == request.auth.uid);
+    }
+
+    // --- assignments: লগইন করা সবাই পড়ে; অ্যাডমিন/শিক্ষক লেখে ---
+    match /assignments/{assignmentId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin()
+        || (isTeacher() && request.resource.data.teacherId == request.auth.uid);
+    }
+
+    // --- submissions: নিজের জমা নিজে পড়ে/জমা দেয়; অ্যাডমিন/শিক্ষক পড়ে ---
+    match /submissions/{submissionId} {
+      allow read: if isSignedIn()
+        && (resource.data.studentId == request.auth.uid || isAdmin() || isTeacher());
+      allow create: if isSignedIn()
+        && request.resource.data.studentId == request.auth.uid;
+      allow update: if isAdmin() || isTeacher();
+      allow delete: if isAdmin();
+    }
+
     // --- settings: শুধু অ্যাডমিন ---
     match /settings/{doc} {
       allow read, write: if isAdmin();
